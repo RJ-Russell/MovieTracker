@@ -5,8 +5,6 @@ import javax.swing.*;
 /**
  * Created by chupacabra on 6/2/16.
  */
-public class Manager {
-    public void run() {
-        new MovieFrame();
-    }
+public class MoviePanel extends JPanel {
+    
 }
