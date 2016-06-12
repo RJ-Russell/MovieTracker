@@ -12,12 +12,29 @@ public class InitialFrame extends JFrame implements ActionListener {
 
     InitialFrame() {
         super("Movie Tracker");
-        setBounds(500, 0, 1000, 800);
-        getContentPane().setBackground(new Color(121,97,50));
 
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.setBackground(new Color(121,97,50));
+        panel.setPreferredSize(new Dimension(400,400));
+        panel.setVisible(true);
+
+        JButton searchBut = new JButton("Search Movies");
+        JButton  addBut =  new JButton("Add Movie");
+        JButton  remBut = new JButton("Remove Movie");
+        JButton exitBut = new JButton("Exit");
+
+        exitBut.addActionListener(this);
+
+
+        getContentPane().add(panel);
+        panel.add(searchBut);
+        panel.add(addBut);
+        panel.add(remBut);
+        panel.add(exitBut);
     }
 
     public void actionPerformed(ActionEvent e) {
-        new UnsupportedOperationException("Not implemented");
+        System.out.println("Exiting...");
+        System.exit(1);
     }
 }
