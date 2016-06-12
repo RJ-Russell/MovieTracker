@@ -2,13 +2,11 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by chupacabra on 6/2/16.
  */
-public class InitialFrame extends JFrame implements ActionListener {
+public class InitialFrame extends JFrame {
 
     InitialFrame() {
         super("Movie Tracker");
@@ -23,7 +21,7 @@ public class InitialFrame extends JFrame implements ActionListener {
         JButton  remBut = new JButton("Remove Movie");
         JButton exitBut = new JButton("Exit");
 
-        exitBut.addActionListener(this);
+        exitBut.addActionListener(actionEvent -> System.exit(1));
 
 
         getContentPane().add(panel);
@@ -33,8 +31,4 @@ public class InitialFrame extends JFrame implements ActionListener {
         panel.add(exitBut);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Exiting...");
-        System.exit(1);
-    }
 }
