@@ -81,8 +81,8 @@ class TrackerGui extends JFrame {
         panels[2].setBackground(background);
         panels[2].setPreferredSize(new Dimension(800,400));
 
-        JTextArea title = new JTextArea("Title: ");
-        JTextField titleField = new JTextField();
+        JTextArea title = new JTextArea("Title: \t");
+        JTextField titleField = new JTextField(30);
 
         panels[2].add(title);
         panels[2].add(titleField);
@@ -93,6 +93,7 @@ class TrackerGui extends JFrame {
     private void readyPanelsForSwitching() {
         for(int i = 1; i < 3; ++i) {
             if(panels[i] != null && panels[i].isDisplayable()) {
+                System.out.print("I: " + i);
                 System.out.println(panels[i].isDisplayable());
                 mainFrame.remove(panels[i]);
             }
