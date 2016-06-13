@@ -2,6 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by chupacabra on 6/2/16.
@@ -16,7 +18,7 @@ class InitialFrame extends JFrame {
         mainFrame.setLayout(new CardLayout());
     }
 
-    public void initPanelShow() {
+    void initPanelShow() {
         JPanel mainPanel = new JPanel();
         mainPanel.setBackground(new Color(121,97,50));
         mainPanel.setPreferredSize(new Dimension(500,400));
@@ -28,6 +30,10 @@ class InitialFrame extends JFrame {
         JButton exitBut = new JButton("Exit");
 
         exitBut.addActionListener(actionEvent -> System.exit(1));
+        searchBut.addActionListener(e -> {
+            mainPanel.setVisible(false);
+            searchPanelShow();
+        });
 
         mainPanel.add(searchBut);
         mainPanel.add(addBut);
@@ -37,7 +43,21 @@ class InitialFrame extends JFrame {
         mainFrame.add(mainPanel);
     }
 
-    public Container getMainFrame() {
-        return mainFrame;
+    private void searchPanelShow() {
+        JPanel searchPanel = new JPanel();
+        searchPanel.setBackground(new Color(0,0,0));
+        searchPanel.setPreferredSize(new Dimension(500,400));
+        searchPanel.setVisible(true);
+
+        JTextArea title = new JTextArea("Title: ");
+        JTextField titleField = new JTextField();
+
+        JButton goHome = new JButton("Home");
+
+        goHome.addActionListener(e -> {
+            searchPanel.setVisible(false);
+            initPanelShow();
+        });
     }
+
 }
