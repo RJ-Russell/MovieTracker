@@ -16,45 +16,57 @@ class InitialFrame extends JFrame {
         setBounds(500, 0, 500, 400);
         mainFrame = getContentPane();
         mainFrame.setLayout(new CardLayout());
+        setVisible(true);
+
+        initPanelShow();
     }
 
-    void initPanelShow() {
+    private void initPanelShow() {
         JPanel mainPanel = new JPanel();
         mainPanel.setBackground(new Color(121,97,50));
         mainPanel.setPreferredSize(new Dimension(500,400));
-        mainPanel.setVisible(true);
 
         JButton searchBut = new JButton("Search Movies");
         JButton  addBut =  new JButton("Add Movie");
         JButton  remBut = new JButton("Remove Movie");
         JButton exitBut = new JButton("Exit");
-
-        exitBut.addActionListener(actionEvent -> System.exit(1));
-        searchBut.addActionListener(e -> {
-            mainPanel.setVisible(false);
-            searchPanelShow();
-        });
-
         mainPanel.add(searchBut);
         mainPanel.add(addBut);
         mainPanel.add(remBut);
         mainPanel.add(exitBut);
 
         mainFrame.add(mainPanel);
+
+        searchBut.addActionListener(e -> {
+            mainFrame.removeAll();
+            mainFrame.repaint();
+            mainFrame.revalidate();
+            searchPanelShow();
+        });
+        exitBut.addActionListener(actionEvent -> System.exit(0));
+
     }
 
     private void searchPanelShow() {
+        getContentPane().removeAll();
         JPanel searchPanel = new JPanel();
         searchPanel.setBackground(new Color(0,0,0));
         searchPanel.setPreferredSize(new Dimension(500,400));
         searchPanel.setVisible(true);
+        getContentPane().repaint();
 
         JTextArea title = new JTextArea("Title: ");
         JTextField titleField = new JTextField();
 
-        JButton goHome = new JButton("Home");
+        JButton goHomeBut = new JButton("Home");
 
-        goHome.addActionListener(e -> {
+        searchPanel.add(title);
+        searchPanel.add(titleField);
+        searchPanel.add(goHomeBut);
+
+        mainFrame.add(searchPanel);
+
+        goHomeBut.addActionListener(e -> {
             searchPanel.setVisible(false);
             initPanelShow();
         });
