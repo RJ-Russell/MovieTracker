@@ -2,49 +2,73 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by chupacabra on 6/2/16.
  */
-class InitialFrame extends JFrame {
+class TrackerGui extends JFrame {
+    private final Color background = new Color(121,97,50);
+    private final Color foreground = Color.WHITE;
+
     private Container mainFrame;
-    InitialFrame() {
+    private JPanel mainPanel;
+    private JPanel defaultPanel;
+    private JPanel addPanel;
+    private JPanel searchPanel;
+    private JPanel remPanel;
+    TrackerGui() {
         super("Movie Tracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(500, 0, 500, 400);
-        mainFrame = getContentPane();
-        mainFrame.setLayout(new CardLayout());
-        setVisible(true);
+        setBounds(500, 0, 1000, 400);
 
-        initPanelShow();
+        mainFrame = getContentPane();
+        mainFrame.setLayout(new BorderLayout());
+
+        mainPanel = new JPanel(new GridLayout(4,1));
+
+        menuPanelShow();
+        showDefaultPanel();
+        setVisible(true);
     }
 
-    private void initPanelShow() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setBackground(new Color(121,97,50));
-        mainPanel.setPreferredSize(new Dimension(500,400));
+    private void menuPanelShow() {
+        mainPanel.setPreferredSize(new Dimension(200,400));
 
         JButton searchBut = new JButton("Search Movies");
-        JButton  addBut =  new JButton("Add Movie");
-        JButton  remBut = new JButton("Remove Movie");
+        searchBut.setBackground(background);
+        searchBut.setForeground(foreground);
+        JButton addBut =  new JButton("Add Movie");
+        addBut.setBackground(background);
+        addBut.setForeground(foreground);
+        JButton remBut = new JButton("Remove Movie");
+        remBut.setBackground(background);
+        remBut.setForeground(foreground);
         JButton exitBut = new JButton("Exit");
+        exitBut.setBackground(background);
+        exitBut.setForeground(foreground);
+
         mainPanel.add(searchBut);
         mainPanel.add(addBut);
         mainPanel.add(remBut);
         mainPanel.add(exitBut);
 
-        mainFrame.add(mainPanel);
+        mainFrame.add(mainPanel, BorderLayout.WEST);
 
         searchBut.addActionListener(e -> {
-            mainFrame.removeAll();
+            mainFrame.remove(defaultPanel);
             mainFrame.repaint();
             mainFrame.revalidate();
             searchPanelShow();
         });
         exitBut.addActionListener(actionEvent -> System.exit(0));
+    }
 
+    private void showDefaultPanel() {
+        defaultPanel = new JPanel();
+        defaultPanel.setPreferredSize(new Dimension(800,400));
+        defaultPanel.setBackground(background);
+
+        mainFrame.add(defaultPanel, BorderLayout.EAST);
     }
 
     private void searchPanelShow() {
@@ -68,7 +92,6 @@ class InitialFrame extends JFrame {
 
         goHomeBut.addActionListener(e -> {
             searchPanel.setVisible(false);
-            initPanelShow();
         });
     }
 
