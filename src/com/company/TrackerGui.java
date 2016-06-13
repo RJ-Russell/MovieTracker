@@ -11,10 +11,8 @@ class TrackerGui extends JFrame {
     private final Color foreground = Color.WHITE;
 
     private Container mainFrame;
-    private JPanel mainPanel;
-    private JPanel defaultPanel;
+    private JPanel[] panels = new JPanel[5];
     private JPanel addPanel;
-    private JPanel searchPanel;
     private JPanel remPanel;
     TrackerGui() {
         super("Movie Tracker");
@@ -24,16 +22,19 @@ class TrackerGui extends JFrame {
         mainFrame = getContentPane();
         mainFrame.setLayout(new BorderLayout());
 
-        mainPanel = new JPanel(new GridLayout(4,1));
+        panels[0] = new JPanel(new GridLayout(5,1));
 
         menuPanelShow();
-        showDefaultPanel();
+        defaultPanelShow();
         setVisible(true);
     }
 
     private void menuPanelShow() {
-        mainPanel.setPreferredSize(new Dimension(200,400));
+        panels[0].setPreferredSize(new Dimension(200,400));
 
+        JButton homeBut = new JButton("Home");
+        homeBut.setBackground(background);
+        homeBut.setForeground(foreground);
         JButton searchBut = new JButton("Search Movies");
         searchBut.setBackground(background);
         searchBut.setForeground(foreground);
@@ -47,52 +48,57 @@ class TrackerGui extends JFrame {
         exitBut.setBackground(background);
         exitBut.setForeground(foreground);
 
-        mainPanel.add(searchBut);
-        mainPanel.add(addBut);
-        mainPanel.add(remBut);
-        mainPanel.add(exitBut);
+        panels[0].add(homeBut);
+        panels[0].add(searchBut);
+        panels[0].add(addBut);
+        panels[0].add(remBut);
+        panels[0].add(exitBut);
 
-        mainFrame.add(mainPanel, BorderLayout.WEST);
+        mainFrame.add(panels[0], BorderLayout.WEST);
+        homeBut.addActionListener(e -> {
+            readyPanelsForSwitching();
+            defaultPanelShow();
+        });
 
         searchBut.addActionListener(e -> {
-            mainFrame.remove(defaultPanel);
-            mainFrame.repaint();
-            mainFrame.revalidate();
+            readyPanelsForSwitching();
             searchPanelShow();
         });
+
         exitBut.addActionListener(actionEvent -> System.exit(0));
     }
 
-    private void showDefaultPanel() {
-        defaultPanel = new JPanel();
-        defaultPanel.setPreferredSize(new Dimension(800,400));
-        defaultPanel.setBackground(background);
+    private void defaultPanelShow() {
+        panels[1] = new JPanel();
+        panels[1].setPreferredSize(new Dimension(800,400));
+        panels[1].setBackground(background);
 
-        mainFrame.add(defaultPanel, BorderLayout.EAST);
+        mainFrame.add(panels[1], BorderLayout.EAST);
     }
 
     private void searchPanelShow() {
-        getContentPane().removeAll();
-        JPanel searchPanel = new JPanel();
-        searchPanel.setBackground(new Color(0,0,0));
-        searchPanel.setPreferredSize(new Dimension(500,400));
-        searchPanel.setVisible(true);
-        getContentPane().repaint();
+        panels[2] = new JPanel();
+        panels[2].setBackground(background);
+        panels[2].setPreferredSize(new Dimension(800,400));
 
         JTextArea title = new JTextArea("Title: ");
         JTextField titleField = new JTextField();
 
-        JButton goHomeBut = new JButton("Home");
+        panels[2].add(title);
+        panels[2].add(titleField);
 
-        searchPanel.add(title);
-        searchPanel.add(titleField);
-        searchPanel.add(goHomeBut);
+        mainFrame.add(panels[2], BorderLayout.EAST);
+    }
 
-        mainFrame.add(searchPanel);
-
-        goHomeBut.addActionListener(e -> {
-            searchPanel.setVisible(false);
-        });
+    private void readyPanelsForSwitching() {
+        for(int i = 1; i < 3; ++i) {
+            if(panels[i] != null && panels[i].isDisplayable()) {
+                System.out.println(panels[i].isDisplayable());
+                mainFrame.remove(panels[i]);
+            }
+        }
+        mainFrame.repaint();
+        mainFrame.revalidate();
     }
 
 }
