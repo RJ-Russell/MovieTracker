@@ -10,11 +10,10 @@ class TrackerGui {
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
     private final JPanel[] panels = new JPanel[5];
+    private final String[] labels = {"Title", "Year"};
 
     private JFrame mainFrame;
     private Container mainContainer;
-    private JPanel addPanel;
-    private JPanel remPanel;
 
     void startTracker() {
         mainFrame = new JFrame();
@@ -30,7 +29,6 @@ class TrackerGui {
 
         menuPanelShow();
         defaultPanelShow();
-     //   searchPanelShow();
         mainFrame.pack();
         mainFrame.setResizable(false);
         mainFrame.setVisible(true);
@@ -72,6 +70,16 @@ class TrackerGui {
             searchPanelShow();
         });
 
+        addBut.addActionListener(e -> {
+            readyPanelsForSwitching();
+            addPanelShow();
+        });
+
+        remBut.addActionListener(e -> {
+            readyPanelsForSwitching();
+            removePanelShow();
+        });
+
         exitBut.addActionListener(actionEvent -> System.exit(0));
     }
 
@@ -85,8 +93,8 @@ class TrackerGui {
     }
 
     private void searchPanelShow() {
-        mainFrame.setTitle("Movie Tracker: Search");
-        String[] labels = {"Title", "Year"};
+        mainFrame.setTitle("Movie Tracker: Search Movies");
+
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
         labelPanel.setPreferredSize(new Dimension(100, 0));
         labelPanel.setBackground(background);
@@ -99,7 +107,97 @@ class TrackerGui {
         panels[2].setPreferredSize(new Dimension(800,400));
         panels[2].add(labelPanel, BorderLayout.WEST);
         panels[2].add(fieldPanel, BorderLayout.CENTER);
+        addPanelContent(labelPanel, fieldPanel, labels, fields);
 
+        JButton goSearch = new JButton("SEARCH MOVIES");
+
+        panels[2].add(goSearch, BorderLayout.SOUTH);
+        mainContainer.add(panels[2], BorderLayout.EAST);
+
+        goSearch.addActionListener(e ->
+                JOptionPane.showMessageDialog(
+                        mainContainer,
+                "Database Not Implemented Yet\n",
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE
+        ));
+    }
+
+    private void addPanelShow() {
+        mainFrame.setTitle("Movie Tracker: Add Movie");
+
+        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
+        labelPanel.setPreferredSize(new Dimension(100, 0));
+        labelPanel.setBackground(background);
+        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
+        fieldPanel.setBackground(background);
+        JTextField[] fields = new JTextField[labels.length];
+
+        panels[3] = new JPanel(new BorderLayout());
+        panels[3].setBackground(background);
+        panels[3].setPreferredSize(new Dimension(800,400));
+        panels[3].add(labelPanel, BorderLayout.WEST);
+        panels[3].add(fieldPanel, BorderLayout.CENTER);
+        addPanelContent(labelPanel, fieldPanel, labels, fields);
+
+        JButton addBut = new JButton("ADD MOVIE");
+
+        panels[3].add(addBut, BorderLayout.SOUTH);
+        mainContainer.add(panels[3], BorderLayout.EAST);
+
+        addBut.addActionListener(e ->
+                JOptionPane.showMessageDialog(
+                        mainContainer,
+                        "Database Not Implemented Yet\n",
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE
+                ));
+    }
+
+    private void removePanelShow() {
+        mainFrame.setTitle("Movie Tracker: Remove Movie");
+
+        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
+        labelPanel.setPreferredSize(new Dimension(100, 0));
+        labelPanel.setBackground(background);
+        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
+        fieldPanel.setBackground(background);
+        JTextField remField = new JTextField();
+
+        panels[3] = new JPanel(new BorderLayout());
+        panels[3].setBackground(background);
+        panels[3].setPreferredSize(new Dimension(800,400));
+        panels[3].add(labelPanel, BorderLayout.WEST);
+        panels[3].add(fieldPanel, BorderLayout.CENTER);
+
+        remField.setToolTipText(labels[0]);
+        remField.setColumns(50);
+        JLabel remLabel = new JLabel(labels[0] + ": ", JLabel.RIGHT);
+        remLabel.setForeground(foreground);
+        remLabel.setLabelFor(remField);
+        labelPanel.add(remLabel);
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 85));
+        p.setBackground(background);
+        p.add(remField);
+        panels[3].add(p);
+
+        JButton remBut = new JButton("REMOVE MOVIE");
+
+        panels[3].add(remBut, BorderLayout.SOUTH);
+        mainContainer.add(panels[3], BorderLayout.EAST);
+
+        remBut.addActionListener(e ->
+                JOptionPane.showMessageDialog(
+                        mainContainer,
+                        "Database Not Implemented Yet\n",
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE
+                ));
+    }
+    private void addPanelContent(JPanel labelPanel,
+                                 JPanel fieldPanel,
+                                 String[] labels,
+                                 JTextField[] fields) {
         for(int i = 0; i < labels.length; ++i) {
             fields[i] = new JTextField();
             fields[i].setToolTipText(labels[i]);
@@ -115,23 +213,10 @@ class TrackerGui {
             p.add(fields[i]);
             fieldPanel.add(p);
         }
-
-        JButton goSearch = new JButton("SEARCH");
-
-        panels[2].add(goSearch, BorderLayout.SOUTH);
-        mainContainer.add(panels[2], BorderLayout.EAST);
-
-        goSearch.addActionListener(e ->
-                JOptionPane.showMessageDialog(
-                        mainContainer,
-                "Database Not Implemented Yet\n",
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE
-        ));
     }
 
     private void readyPanelsForSwitching() {
-        for(int i = 1; i < 3; ++i) {
+        for(int i = 1; i < panels.length; ++i) {
             if(panels[i] != null && panels[i].isDisplayable()) {
                 System.out.print("I: " + i + " ");
                 System.out.println(panels[i].isDisplayable());
