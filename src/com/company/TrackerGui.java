@@ -1,37 +1,39 @@
 package com.company;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
  * Created by chupacabra on 6/2/16.
  */
-class TrackerGui extends JFrame {
+class TrackerGui {
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
     private final JPanel[] panels = new JPanel[5];
 
-    private Container mainFrame;
+    private JFrame mainFrame;
+    private Container mainContainer;
     private JPanel addPanel;
     private JPanel remPanel;
-    TrackerGui() {
-        super("Movie Tracker");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocation(500, 0);
 
-        mainFrame = getContentPane();
-        mainFrame.setLayout(new BorderLayout());
+    void startTracker() {
+        mainFrame = new JFrame();
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        mainFrame.setBackground(background);
+        mainFrame.setLocation(500, 0);
+        mainFrame.setSize(500,300);
+
+        mainContainer = mainFrame.getContentPane();
+        mainContainer.setLayout(new BorderLayout());
 
         panels[0] = new JPanel(new GridLayout(5,1));
 
         menuPanelShow();
-     //   defaultPanelShow();
-        searchPanelShow();
-        pack();
-        setVisible(true);
+        defaultPanelShow();
+     //   searchPanelShow();
+        mainFrame.pack();
+        mainFrame.setResizable(false);
+        mainFrame.setVisible(true);
     }
 
     private void menuPanelShow() {
@@ -59,7 +61,7 @@ class TrackerGui extends JFrame {
         panels[0].add(remBut);
         panels[0].add(exitBut);
 
-        mainFrame.add(panels[0], BorderLayout.WEST);
+        mainContainer.add(panels[0], BorderLayout.WEST);
         homeBut.addActionListener(e -> {
             readyPanelsForSwitching();
             defaultPanelShow();
@@ -74,16 +76,19 @@ class TrackerGui extends JFrame {
     }
 
     private void defaultPanelShow() {
+        mainFrame.setTitle("Movie Tracker");
         panels[1] = new JPanel();
         panels[1].setPreferredSize(new Dimension(800,400));
         panels[1].setBackground(background);
 
-        mainFrame.add(panels[1], BorderLayout.EAST);
+        mainContainer.add(panels[1], BorderLayout.EAST);
     }
 
     private void searchPanelShow() {
-        String[] labels = {"Title", "Year", "Genre"};
+        mainFrame.setTitle("Movie Tracker: Search");
+        String[] labels = {"Title", "Year"};
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
+        labelPanel.setPreferredSize(new Dimension(100, 0));
         labelPanel.setBackground(background);
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
@@ -101,21 +106,28 @@ class TrackerGui extends JFrame {
             fields[i].setColumns(50);
 
             JLabel label = new JLabel(labels[i] + ": ", JLabel.RIGHT);
+            label.setForeground(foreground);
             label.setLabelFor(fields[i]);
 
             labelPanel.add(label);
-            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 50));
+            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 85));
             p.setBackground(background);
             p.add(fields[i]);
             fieldPanel.add(p);
         }
 
-
         JButton goSearch = new JButton("SEARCH");
 
         panels[2].add(goSearch, BorderLayout.SOUTH);
+        mainContainer.add(panels[2], BorderLayout.EAST);
 
-        mainFrame.add(panels[2], BorderLayout.EAST);
+        goSearch.addActionListener(e ->
+                JOptionPane.showMessageDialog(
+                        mainContainer,
+                "Database Not Implemented Yet\n",
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE
+        ));
     }
 
     private void readyPanelsForSwitching() {
@@ -123,11 +135,11 @@ class TrackerGui extends JFrame {
             if(panels[i] != null && panels[i].isDisplayable()) {
                 System.out.print("I: " + i + " ");
                 System.out.println(panels[i].isDisplayable());
-                mainFrame.remove(panels[i]);
+                mainContainer.remove(panels[i]);
             }
         }
-        mainFrame.repaint();
-        mainFrame.revalidate();
+        mainContainer.repaint();
+        mainContainer.revalidate();
     }
 
 }

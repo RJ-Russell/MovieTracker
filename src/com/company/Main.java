@@ -3,6 +3,7 @@ package com.company;
 public class Main {
 
     public static void main(String[] args) {
-        new TrackerGui();
+        TrackerGui tracker = new TrackerGui();
+        tracker.startTracker();
     }
 }
