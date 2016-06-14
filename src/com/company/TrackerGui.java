@@ -114,7 +114,7 @@ class TrackerGui {
         panels[2].add(goSearch, BorderLayout.SOUTH);
         mainContainer.add(panels[2], BorderLayout.EAST);
 
-        goSearch.addActionListener(e ->
+        goSearch.addActionListener(doSearchThing ->
                 JOptionPane.showMessageDialog(
                         mainContainer,
                 "Database Not Implemented Yet\n",
@@ -145,7 +145,7 @@ class TrackerGui {
         panels[3].add(addBut, BorderLayout.SOUTH);
         mainContainer.add(panels[3], BorderLayout.EAST);
 
-        addBut.addActionListener(e ->
+        addBut.addActionListener(doAddThing ->
                 JOptionPane.showMessageDialog(
                         mainContainer,
                         "Database Not Implemented Yet\n",
@@ -164,11 +164,11 @@ class TrackerGui {
         fieldPanel.setBackground(background);
         JTextField remField = new JTextField();
 
-        panels[3] = new JPanel(new BorderLayout());
-        panels[3].setBackground(background);
-        panels[3].setPreferredSize(new Dimension(800,400));
-        panels[3].add(labelPanel, BorderLayout.WEST);
-        panels[3].add(fieldPanel, BorderLayout.CENTER);
+        panels[4] = new JPanel(new BorderLayout());
+        panels[4].setBackground(background);
+        panels[4].setPreferredSize(new Dimension(800,400));
+        panels[4].add(labelPanel, BorderLayout.WEST);
+        panels[4].add(fieldPanel, BorderLayout.CENTER);
 
         remField.setToolTipText(labels[0]);
         remField.setColumns(50);
@@ -179,14 +179,14 @@ class TrackerGui {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 85));
         p.setBackground(background);
         p.add(remField);
-        panels[3].add(p);
+        panels[4].add(p);
 
         JButton remBut = new JButton("REMOVE MOVIE");
 
-        panels[3].add(remBut, BorderLayout.SOUTH);
-        mainContainer.add(panels[3], BorderLayout.EAST);
+        panels[4].add(remBut, BorderLayout.SOUTH);
+        mainContainer.add(panels[4], BorderLayout.EAST);
 
-        remBut.addActionListener(e ->
+        remBut.addActionListener(doRemoveThing ->
                 JOptionPane.showMessageDialog(
                         mainContainer,
                         "Database Not Implemented Yet\n",
@@ -194,6 +194,7 @@ class TrackerGui {
                         JOptionPane.ERROR_MESSAGE
                 ));
     }
+
     private void addPanelContent(JPanel labelPanel,
                                  JPanel fieldPanel,
                                  String[] labels,
@@ -218,13 +219,10 @@ class TrackerGui {
     private void readyPanelsForSwitching() {
         for(int i = 1; i < panels.length; ++i) {
             if(panels[i] != null && panels[i].isDisplayable()) {
-                System.out.print("I: " + i + " ");
-                System.out.println(panels[i].isDisplayable());
                 mainContainer.remove(panels[i]);
             }
         }
         mainContainer.repaint();
         mainContainer.revalidate();
     }
-
 }
