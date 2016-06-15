@@ -7,6 +7,8 @@ import java.awt.*;
  * Created by chupacabra on 6/2/16.
  */
 class TrackerGui {
+ //   MovieDB db = new MovieDB();
+
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
     private final JPanel[] panels = new JPanel[5];
