@@ -12,7 +12,8 @@ class TrackerGui {
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
     private final JPanel[] panels = new JPanel[5];
-    private final String[] labels = {"Title", "Year"};
+    private final String[] labels =
+        {"Title", "Year", "Genre", "Actors", "Rated", "Runtime", "Plot"};
 
     private JFrame mainFrame;
     private Container mainContainer;
@@ -211,7 +212,7 @@ class TrackerGui {
             label.setLabelFor(fields[i]);
 
             labelPanel.add(label);
-            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 85));
+            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 15));
             p.setBackground(background);
             p.add(fields[i]);
             fieldPanel.add(p);

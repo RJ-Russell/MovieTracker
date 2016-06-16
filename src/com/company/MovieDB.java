@@ -14,15 +14,15 @@ public class MovieDB {
     private Connection conn;
     private Statement stmt;
 
-    private static final String CREATE_TABLE = "CREATE TABLE MOVIES "
-            + "(imdbID VARCHAR(255) NOT NULL PRIMARY KEY, "
-            + "title VARCHAR(255), "
-            + "year INTEGER(4), "
-            + "genres VARCHAR(255), "
-            + "actors VARCHAR(255), "
-            + "rating VARCHAR(10), "
-            + "runtime VARCHAR(10), "
-            + "plot VARCHAR(255))";
+    private static final String CREATE_TABLE = "CREATE TABLE `movies` "
+            + "(`imdb_id` VARCHAR(255) NOT NULL PRIMARY KEY, "
+            + "`title` VARCHAR(255), "
+            + "`year` INTEGER(4), "
+            + "`genres` VARCHAR(255), "
+            + "`actors` VARCHAR(255), "
+            + "`rating` VARCHAR(255), "
+            + "`runtime` VARCHAR(255), "
+            + "`plot` VARCHAR(255))";
 
     MovieDB() {
         connectDatabase();
