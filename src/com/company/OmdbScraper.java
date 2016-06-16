@@ -14,11 +14,17 @@ import java.net.URL;
 import java.util.Map;
 
 class OmdbScraper {
-  Map<String, String> getStuff(String toFind) throws IOException {
+  Map<String, String> getStuff(String movie, String year) throws IOException {
 
-    String movie = toFind.replace(' ', '+');
-    String url = "http://omdbapi.com/?t=" + movie;
+    movie = movie.replace(' ', '+');
+    String yearUrl = "&y=" + (year.equals("") ? "" : year);
+    System.out.println(yearUrl);
+    String titleUrl = "t=" + movie;
+    String plotAndFormat = "&plot=short&r=json";
+    String url = "http://omdbapi.com/?" + titleUrl + yearUrl + plotAndFormat;
     String charset = "UTF-8";
+
+    System.out.println(url);
 
     InputStream input = new URL(url).openStream();
     InputStreamReader stream = new InputStreamReader(input, charset);
@@ -35,6 +41,5 @@ class OmdbScraper {
     System.out.println(map.get("Runtime"));
     System.out.println(map.get("Plot"));
     return map;
-
   }
 }

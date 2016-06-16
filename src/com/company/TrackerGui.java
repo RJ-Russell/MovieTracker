@@ -175,6 +175,7 @@ class TrackerGui {
         omdbBut.addActionListener(doSearchThing -> {
             Map<String, String> movie = null;
             String title = fields[0].getText();
+            String year = fields[1].getText();
             if(title.equals("")) {
                 JOptionPane.showMessageDialog(
                     mainContainer, "Error: Title field cannot be empty!",
@@ -182,7 +183,7 @@ class TrackerGui {
                 );
             } else {
                 try {
-                    movie = omdb.getStuff(title);
+                    movie = omdb.getStuff(title, year);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
