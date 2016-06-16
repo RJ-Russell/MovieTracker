@@ -7,6 +7,5 @@ public class Main {
     public static void main(String[] args) throws IOException {
         TrackerGui tracker = new TrackerGui();
         tracker.startTracker();
-
     }
 }

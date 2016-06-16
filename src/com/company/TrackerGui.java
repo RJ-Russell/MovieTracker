@@ -118,7 +118,7 @@ class TrackerGui {
         panels[2].setPreferredSize(new Dimension(800,400));
         panels[2].add(labelPanel, BorderLayout.WEST);
         panels[2].add(fieldPanel, BorderLayout.CENTER);
-        addPanelContent(labelPanel, fieldPanel, labels, fields);
+        addPanelContent(labelPanel, fieldPanel, labels, fields, null);
 
         JButton goSearch = new JButton("SEARCH MOVIES");
 
@@ -142,14 +142,20 @@ class TrackerGui {
         labelPanel.setBackground(background);
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
-        JTextField[] fields = new JTextField[labels.length];
+        JTextField[] fields = new JTextField[labels.length - 1];
+
+        JTextArea plot = new JTextArea();
+        plot.setToolTipText(labels[labels.length - 1]);
+        plot.setColumns(50);
+        plot.setLineWrap(true);
+
 
         panels[3] = new JPanel(new BorderLayout());
         panels[3].setBackground(background);
         panels[3].setPreferredSize(new Dimension(800,400));
         panels[3].add(labelPanel, BorderLayout.WEST);
         panels[3].add(fieldPanel, BorderLayout.CENTER);
-        addPanelContent(labelPanel, fieldPanel, labels, fields);
+        addPanelContent(labelPanel, fieldPanel, labels, fields, plot);
 
         JButton addBut = new JButton("ADD MOVIE");
 
@@ -178,7 +184,8 @@ class TrackerGui {
                     fields[3].setText(movie.get("Actors"));
                     fields[4].setText(movie.get("Rated"));
                     fields[5].setText(movie.get("Runtime"));
-                    fields[6].setText(movie.get("Plot"));
+                 //   fields[6].setText(movie.get("Plot"));
+                    plot.setText(movie.get("Plot"));
                 }
             }
         });
@@ -228,21 +235,32 @@ class TrackerGui {
     private void addPanelContent(JPanel labelPanel,
                                  JPanel fieldPanel,
                                  String[] labels,
-                                 JTextField[] fields) {
+                                 JTextField[] fields,
+                                 JTextArea plot) {
         for(int i = 0; i < labels.length; ++i) {
-            fields[i] = new JTextField();
-            fields[i].setToolTipText(labels[i]);
-            fields[i].setColumns(50);
+            if(i == labels.length - 1) {
+                JLabel plotLabel = new JLabel(labels[i] + ": ", JLabel.RIGHT);
+                plotLabel.setForeground(foreground);
+                plotLabel.setLabelFor(plot);
+                labelPanel.add(plotLabel);
+                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 15));
+                p.add(plot);
+                fieldPanel.add(p);
+            } else {
+                fields[i] = new JTextField();
+                fields[i].setToolTipText(labels[i]);
+                fields[i].setColumns(50);
 
-            JLabel label = new JLabel(labels[i] + ": ", JLabel.RIGHT);
-            label.setForeground(foreground);
-            label.setLabelFor(fields[i]);
+                JLabel label = new JLabel(labels[i] + ": ", JLabel.RIGHT);
+                label.setForeground(foreground);
+                label.setLabelFor(fields[i]);
 
-            labelPanel.add(label);
-            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 15));
-            p.setBackground(background);
-            p.add(fields[i]);
-            fieldPanel.add(p);
+                labelPanel.add(label);
+                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 15));
+                p.setBackground(background);
+                p.add(fields[i]);
+                fieldPanel.add(p);
+            }
         }
     }
 
