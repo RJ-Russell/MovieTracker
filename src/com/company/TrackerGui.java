@@ -4,6 +4,7 @@ import org.h2.mvstore.MVMap;
 import org.omg.CORBA.OMGVMCID;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,8 @@ class TrackerGui {
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setBackground(background);
         mainFrame.setLocation(500, 0);
-        mainFrame.setSize(500,300);
+ //       mainFrame.setSize(new Dimension(700, 700));
+        mainFrame.setResizable(false);
 
         mainContainer = mainFrame.getContentPane();
         mainContainer.setLayout(new BorderLayout());
@@ -41,12 +43,11 @@ class TrackerGui {
         menuPanelShow();
         defaultPanelShow();
         mainFrame.pack();
-        mainFrame.setResizable(false);
         mainFrame.setVisible(true);
     }
 
     private void menuPanelShow() {
-        panels[0].setPreferredSize(new Dimension(200,400));
+        panels[0].setPreferredSize(new Dimension(175,600));
 
         JButton homeBut = new JButton("Home");
         homeBut.setBackground(background);
@@ -107,7 +108,7 @@ class TrackerGui {
         mainFrame.setTitle("Movie Tracker: Search Movies");
 
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(100, 0));
+        labelPanel.setPreferredSize(new Dimension(100, 15));
         labelPanel.setBackground(background);
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
@@ -138,17 +139,13 @@ class TrackerGui {
         mainFrame.setTitle("Movie Tracker: Add Movie");
 
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(100, 0));
+        labelPanel.setPreferredSize(new Dimension(100, 15));
         labelPanel.setBackground(background);
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
         JTextField[] fields = new JTextField[labels.length - 1];
 
-        JTextArea plot = new JTextArea();
-        plot.setToolTipText(labels[labels.length - 1]);
-        plot.setColumns(50);
-        plot.setLineWrap(true);
-
+        JTextArea plot = new JTextArea(5, 50);
 
         panels[3] = new JPanel(new BorderLayout());
         panels[3].setBackground(background);
@@ -239,11 +236,17 @@ class TrackerGui {
                                  JTextArea plot) {
         for(int i = 0; i < labels.length; ++i) {
             if(i == labels.length - 1) {
+                plot.setBorder(new EmptyBorder(2,2,2,2));
+                plot.setToolTipText(labels[labels.length - 1]);
+                plot.setWrapStyleWord(true);
+                plot.setLineWrap(true);
+
                 JLabel plotLabel = new JLabel(labels[i] + ": ", JLabel.RIGHT);
                 plotLabel.setForeground(foreground);
                 plotLabel.setLabelFor(plot);
                 labelPanel.add(plotLabel);
-                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 15));
+                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+                p.setBackground(background);
                 p.add(plot);
                 fieldPanel.add(p);
             } else {
@@ -256,7 +259,7 @@ class TrackerGui {
                 label.setLabelFor(fields[i]);
 
                 labelPanel.add(label);
-                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 15));
+                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 30));
                 p.setBackground(background);
                 p.add(fields[i]);
                 fieldPanel.add(p);
