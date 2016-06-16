@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.Map;
 
 class OmdbScraper {
-  void getStuff(String toFind) throws IOException {
+  Map<String, String> getStuff(String toFind) throws IOException {
 
     String movie = toFind.replace(' ', '+');
     String url = "http://omdbapi.com/?t=" + movie;
@@ -24,24 +24,17 @@ class OmdbScraper {
     InputStreamReader stream = new InputStreamReader(input, charset);
 
     TypeToken token = new TypeToken<Map<String, String>>(){};
-    Map<String, String> map = new Gson().fromJson(stream, token.getType());
+    Map<String, String> map = return new Gson().fromJson(stream, token.getType());
 
-    String imdbID = map.get("imdbID");
-    String title = map.get("Title");
-    String year = map.get("Year");
-    String genre = map.get("Genre");
-    String actors = map.get("Actors");
-    String rated = map.get("Rated");
-    String runtime = map.get("Runtime");
-    String plot = map.get("Plot");
-
-    System.out.println(imdbID);
-    System.out.println(title);
-    System.out.println(year);
-    System.out.println(genre);
-    System.out.println(actors);
-    System.out.println(rated);
-    System.out.println(runtime);
-    System.out.println(plot);
+    System.out.println(map.get("imdbID"));
+    System.out.println(map.get("Title"));
+    System.out.println(map.get("Year"));
+    System.out.println(map.get("Genre"));
+    System.out.println(map.get("Actors"));
+    System.out.println(map.get("Rated"));
+    System.out.println(map.get("Runtime"));
+    System.out.println(map.get("Plot"));
+    return map;
+  
   }
 }

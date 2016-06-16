@@ -1,13 +1,21 @@
 package com.company;
 
+import org.h2.mvstore.MVMap;
+import org.omg.CORBA.OMGVMCID;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by chupacabra on 6/2/16.
  */
 class TrackerGui {
  //   MovieDB db = new MovieDB();
+    private final OmdbScraper omdb = new OmdbScraper();
 
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
@@ -147,14 +155,33 @@ class TrackerGui {
 
         panels[3].add(addBut, BorderLayout.SOUTH);
         mainContainer.add(panels[3], BorderLayout.EAST);
+        mainFrame.getRootPane().setDefaultButton(addBut);
 
-        addBut.addActionListener(doAddThing ->
+        addBut.addActionListener(doAddThing -> {
+            Map<String, String> movie = null;
+            String title = fields[0].getText();
+            if(title.equals("")) {
                 JOptionPane.showMessageDialog(
-                        mainContainer,
-                        "Database Not Implemented Yet\n",
-                        "Database Error",
-                        JOptionPane.ERROR_MESSAGE
-                ));
+                    mainContainer, "Error: Title field cannot be empty!",
+                    "Error", JOptionPane.ERROR_MESSAGE
+                );
+            } else {
+                try {
+                    movie = omdb.getStuff(title);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(movie != null) {
+                    fields[0].setText(movie.get("Title"));
+                    fields[1].setText(movie.get("Year"));
+                    fields[2].setText(movie.get("Genre"));
+                    fields[3].setText(movie.get("Actors"));
+                    fields[4].setText(movie.get("Rated"));
+                    fields[5].setText(movie.get("Runtime"));
+                    fields[6].setText(movie.get("Plot"));
+                }
+            }
+        });
     }
 
     private void removePanelShow() {
