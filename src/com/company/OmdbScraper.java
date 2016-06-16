@@ -24,7 +24,7 @@ class OmdbScraper {
     InputStreamReader stream = new InputStreamReader(input, charset);
 
     TypeToken token = new TypeToken<Map<String, String>>(){};
-    Map<String, String> map = return new Gson().fromJson(stream, token.getType());
+    Map<String, String> map = new Gson().fromJson(stream, token.getType());
 
     System.out.println(map.get("imdbID"));
     System.out.println(map.get("Title"));
@@ -35,6 +35,6 @@ class OmdbScraper {
     System.out.println(map.get("Runtime"));
     System.out.println(map.get("Plot"));
     return map;
-  
+
   }
 }
