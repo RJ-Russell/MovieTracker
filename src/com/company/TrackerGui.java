@@ -114,12 +114,14 @@ class TrackerGui {
         fieldPanel.setBackground(background);
         JTextField[] fields = new JTextField[labels.length];
 
+        JTextArea plot = new JTextArea(5, 50);
+
         panels[2] = new JPanel(new BorderLayout());
         panels[2].setBackground(background);
         panels[2].setPreferredSize(new Dimension(800,400));
         panels[2].add(labelPanel, BorderLayout.WEST);
         panels[2].add(fieldPanel, BorderLayout.CENTER);
-        addPanelContent(labelPanel, fieldPanel, labels, fields, null);
+        addPanelContent(labelPanel, fieldPanel, labels, fields, plot);
 
         JButton goSearch = new JButton("SEARCH MOVIES");
 
@@ -141,6 +143,7 @@ class TrackerGui {
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
         labelPanel.setPreferredSize(new Dimension(100, 15));
         labelPanel.setBackground(background);
+
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
         JTextField[] fields = new JTextField[labels.length - 1];
@@ -154,13 +157,22 @@ class TrackerGui {
         panels[3].add(fieldPanel, BorderLayout.CENTER);
         addPanelContent(labelPanel, fieldPanel, labels, fields, plot);
 
-        JButton addBut = new JButton("ADD MOVIE");
+        JButton addBut = new JButton("Add Movie");
+        JButton omdbBut = new JButton("Search IMDB");
+        JButton clearBut = new JButton("Clear Fields");
 
-        panels[3].add(addBut, BorderLayout.SOUTH);
+
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.add(addBut, BorderLayout.EAST);
+        buttonPanel.add(omdbBut, BorderLayout.CENTER);
+        buttonPanel.add(clearBut, BorderLayout.WEST);
+
+        panels[3].add(buttonPanel, BorderLayout.SOUTH);
+
         mainContainer.add(panels[3], BorderLayout.EAST);
-        mainFrame.getRootPane().setDefaultButton(addBut);
+        mainFrame.getRootPane().setDefaultButton(omdbBut);
 
-        addBut.addActionListener(doAddThing -> {
+        omdbBut.addActionListener(doSearchThing -> {
             Map<String, String> movie = null;
             String title = fields[0].getText();
             if(title.equals("")) {
@@ -175,16 +187,31 @@ class TrackerGui {
                     e.printStackTrace();
                 }
                 if(movie != null) {
-                    fields[0].setText(movie.get("Title"));
-                    fields[1].setText(movie.get("Year"));
-                    fields[2].setText(movie.get("Genre"));
-                    fields[3].setText(movie.get("Actors"));
-                    fields[4].setText(movie.get("Rated"));
-                    fields[5].setText(movie.get("Runtime"));
-                 //   fields[6].setText(movie.get("Plot"));
-                    plot.setText(movie.get("Plot"));
+                    title = movie.get("Title");
+                    if(title == null) {
+                        JOptionPane.showMessageDialog(
+                            mainContainer, "Movie not found in IMDB database",
+                            "Movie Not Found", JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } else {
+                        fields[0].setText(title);
+                        fields[1].setText(movie.get("Year"));
+                        fields[2].setText(movie.get("Genre"));
+                        fields[3].setText(movie.get("Actors"));
+                        fields[4].setText(movie.get("Rated"));
+                        fields[5].setText(movie.get("Runtime"));
+                        plot.setText(movie.get("Plot"));
+                    }
                 }
+
             }
+        });
+
+        clearBut.addActionListener(e -> {
+            for(int i = 0; i < labels.length - 1; ++i) {
+                fields[i].setText("");
+            }
+            plot.setText("");
         });
     }
 
@@ -194,9 +221,9 @@ class TrackerGui {
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
         labelPanel.setPreferredSize(new Dimension(100, 0));
         labelPanel.setBackground(background);
+
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
-        JTextField remField = new JTextField();
 
         panels[4] = new JPanel(new BorderLayout());
         panels[4].setBackground(background);
@@ -204,20 +231,24 @@ class TrackerGui {
         panels[4].add(labelPanel, BorderLayout.WEST);
         panels[4].add(fieldPanel, BorderLayout.CENTER);
 
+        JTextField remField = new JTextField();
         remField.setToolTipText(labels[0]);
         remField.setColumns(50);
+
         JLabel remLabel = new JLabel(labels[0] + ": ", JLabel.RIGHT);
         remLabel.setForeground(foreground);
         remLabel.setLabelFor(remField);
         labelPanel.add(remLabel);
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 85));
-        p.setBackground(background);
-        p.add(remField);
-        panels[4].add(p);
 
         JButton remBut = new JButton("REMOVE MOVIE");
 
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 30));
+        p.setBackground(background);
+        p.add(remField, BorderLayout.CENTER);
+
+        panels[4].add(p);
         panels[4].add(remBut, BorderLayout.SOUTH);
+
         mainContainer.add(panels[4], BorderLayout.EAST);
 
         remBut.addActionListener(doRemoveThing ->
