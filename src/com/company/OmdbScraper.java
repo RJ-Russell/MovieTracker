@@ -17,14 +17,13 @@ class OmdbScraper {
   Map<String, String> getStuff(String movie, String year) throws IOException {
 
     movie = movie.replace(' ', '+');
+
     String yearUrl = "&y=" + (year.equals("") ? "" : year);
-    System.out.println(yearUrl);
     String titleUrl = "t=" + movie;
     String plotAndFormat = "&plot=short&r=json";
     String url = "http://omdbapi.com/?" + titleUrl + yearUrl + plotAndFormat;
-    String charset = "UTF-8";
 
-    System.out.println(url);
+    String charset = "UTF-8";
 
     InputStream input = new URL(url).openStream();
     InputStreamReader stream = new InputStreamReader(input, charset);

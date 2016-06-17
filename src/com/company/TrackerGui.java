@@ -1,13 +1,10 @@
 package com.company;
 
 import org.h2.mvstore.MVMap;
-import org.omg.CORBA.OMGVMCID;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
 
@@ -31,7 +28,7 @@ class TrackerGui {
         mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setBackground(background);
-        mainFrame.setLocation(500, 0);
+ //       mainFrame.setLocation(500, 0);
  //       mainFrame.setSize(new Dimension(700, 700));
         mainFrame.setResizable(false);
 
@@ -101,6 +98,19 @@ class TrackerGui {
         panels[1].setPreferredSize(new Dimension(800,400));
         panels[1].setBackground(background);
 
+        JTextArea instructions = new JTextArea();
+        instructions.setBackground(background);
+        instructions.setForeground(foreground);
+        instructions.setText(
+            "Simple directions for the Movie Tracker Application\n\n"    +
+                "The Home and Exit buttons should be self explanatory. " +
+                "If you happen to be confused by them, punch yourself.\n\n"
+            + "1. Search Movies: \n\n"
+            + "2. Add Movie: \n\n"
+            + "3. Remove Movie: \n\n"
+        );
+
+        panels[1].add(instructions);
         mainContainer.add(panels[1], BorderLayout.EAST);
     }
 
@@ -108,7 +118,7 @@ class TrackerGui {
         mainFrame.setTitle("Movie Tracker: Search Movies");
 
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(100, 15));
+        labelPanel.setPreferredSize(new Dimension(123, 15));
         labelPanel.setBackground(background);
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
@@ -123,7 +133,7 @@ class TrackerGui {
         panels[2].add(fieldPanel, BorderLayout.CENTER);
         addPanelContent(labelPanel, fieldPanel, labels, fields, plot);
 
-        JButton goSearch = new JButton("SEARCH MOVIES");
+        JButton goSearch = new JButton("Search Movie Collection");
 
         panels[2].add(goSearch, BorderLayout.SOUTH);
         mainContainer.add(panels[2], BorderLayout.EAST);
@@ -141,7 +151,7 @@ class TrackerGui {
         mainFrame.setTitle("Movie Tracker: Add Movie");
 
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(100, 15));
+        labelPanel.setPreferredSize(new Dimension(123, 15));
         labelPanel.setBackground(background);
 
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
@@ -171,6 +181,14 @@ class TrackerGui {
 
         mainContainer.add(panels[3], BorderLayout.EAST);
         mainFrame.getRootPane().setDefaultButton(omdbBut);
+
+        // TODO: Implement adding to database
+        addBut.addActionListener(doAddThing -> {
+            JOptionPane.showMessageDialog(
+                mainContainer, "Error: Database not implemented yet.",
+                "Error", JOptionPane.ERROR_MESSAGE
+            );
+        });
 
         omdbBut.addActionListener(doSearchThing -> {
             Map<String, String> movie = null;
@@ -220,7 +238,7 @@ class TrackerGui {
         mainFrame.setTitle("Movie Tracker: Remove Movie");
 
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(100, 0));
+        labelPanel.setPreferredSize(new Dimension(123, 15));
         labelPanel.setBackground(background);
 
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
