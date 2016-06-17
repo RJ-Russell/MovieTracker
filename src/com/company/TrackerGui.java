@@ -156,7 +156,7 @@ class TrackerGui {
 
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
-        JTextField[] fields = new JTextField[labels.length - 1];
+        JTextField[] fields = new JTextField[labels.length];
 
         JTextArea plot = new JTextArea(5, 50);
 
@@ -244,28 +244,18 @@ class TrackerGui {
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(background);
 
+        JTextField[] fields = new JTextField[2];
+
         panels[4] = new JPanel(new BorderLayout());
         panels[4].setBackground(background);
         panels[4].setPreferredSize(new Dimension(800,400));
         panels[4].add(labelPanel, BorderLayout.WEST);
         panels[4].add(fieldPanel, BorderLayout.CENTER);
+        addPanelContent(labelPanel, fieldPanel, labels, fields, null);
 
-        JTextField remField = new JTextField();
-        remField.setToolTipText(labels[0]);
-        remField.setColumns(50);
 
-        JLabel remLabel = new JLabel(labels[0] + ": ", JLabel.RIGHT);
-        remLabel.setForeground(foreground);
-        remLabel.setLabelFor(remField);
-        labelPanel.add(remLabel);
 
         JButton remBut = new JButton("REMOVE MOVIE");
-
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 30));
-        p.setBackground(background);
-        p.add(remField, BorderLayout.CENTER);
-
-        panels[4].add(p);
         panels[4].add(remBut, BorderLayout.SOUTH);
 
         mainContainer.add(panels[4], BorderLayout.EAST);
@@ -284,7 +274,7 @@ class TrackerGui {
                                  String[] labels,
                                  JTextField[] fields,
                                  JTextArea plot) {
-        for(int i = 0; i < labels.length; ++i) {
+        for(int i = 0; i < fields.length; ++i) {
             if(i == labels.length - 1) {
                 plot.setBorder(new EmptyBorder(2,2,2,2));
                 plot.setToolTipText(labels[labels.length - 1]);
@@ -294,6 +284,7 @@ class TrackerGui {
                 JLabel plotLabel = new JLabel(labels[i] + ": ", JLabel.RIGHT);
                 plotLabel.setForeground(foreground);
                 plotLabel.setLabelFor(plot);
+
                 labelPanel.add(plotLabel);
                 JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
                 p.setBackground(background);
