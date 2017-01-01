@@ -14,7 +14,7 @@ public class MovieDB {
     private Connection conn;
     private Statement stmt;
 
-    private static final String CREATE_TABLE = "CREATE TABLE `movies` "
+    private static final String CREATE_TABLE = "CREATE TABLE `movies`"
             + "(`imdb_id` VARCHAR(255) NOT NULL PRIMARY KEY, "
             + "`title` VARCHAR(255), "
             + "`year` INTEGER(4), "

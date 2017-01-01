@@ -5,12 +5,10 @@ import org.h2.mvstore.MVMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Created by chupacabra on 6/2/16.
- */
 class TrackerGui {
  //   MovieDB db = new MovieDB();
     private final OmdbScraper omdb = new OmdbScraper();
@@ -19,7 +17,7 @@ class TrackerGui {
     private final Color foreground = Color.WHITE;
     private final JPanel[] panels = new JPanel[5];
     private final String[] labels =
-        {"Title", "Year", "Genre", "Actors", "Rated", "Runtime", "Plot"};
+        {"IMDB ID", "Title", "Year", "Genre", "Actors", "Rated", "Runtime", "Plot"};
 
     private JFrame mainFrame;
     private Container mainContainer;
@@ -28,8 +26,7 @@ class TrackerGui {
         mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setBackground(background);
- //       mainFrame.setLocation(500, 0);
- //       mainFrame.setSize(new Dimension(700, 700));
+        mainFrame.setLocation(500, 250);
         mainFrame.setResizable(false);
 
         mainContainer = mainFrame.getContentPane();
@@ -183,25 +180,25 @@ class TrackerGui {
         mainFrame.getRootPane().setDefaultButton(omdbBut);
 
         // TODO: Implement adding to database
-        addBut.addActionListener(doAddThing -> {
-            JOptionPane.showMessageDialog(
-                mainContainer, "Error: Database not implemented yet.",
-                "Error", JOptionPane.ERROR_MESSAGE
-            );
-        });
+        addBut.addActionListener((ActionEvent doAddThing) -> JOptionPane.showMessageDialog(
+            mainContainer, "Error: Database not implemented yet.",
+            "Error", JOptionPane.ERROR_MESSAGE
+        ));
 
         omdbBut.addActionListener(doSearchThing -> {
             Map<String, String> movie = null;
-            String title = fields[0].getText();
-            String year = fields[1].getText();
-            if(title.equals("")) {
+            String imdbId = fields[0].getText();
+            System.out.println("IMDB ID: " + imdbId);
+            String title = fields[1].getText();
+            String year = fields[2].getText();
+            if(title.equals("") && imdbId.equals("")) {
                 JOptionPane.showMessageDialog(
-                    mainContainer, "Error: Title field cannot be empty!",
+                    mainContainer, "Error: Please enter the title or the imdb ID",
                     "Error", JOptionPane.ERROR_MESSAGE
                 );
             } else {
                 try {
-                    movie = omdb.getStuff(title, year);
+                    movie = omdb.getStuff(imdbId, title, year);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -213,12 +210,13 @@ class TrackerGui {
                             "Movie Not Found", JOptionPane.INFORMATION_MESSAGE
                         );
                     } else {
-                        fields[0].setText(title);
-                        fields[1].setText(movie.get("Year"));
-                        fields[2].setText(movie.get("Genre"));
-                        fields[3].setText(movie.get("Actors"));
-                        fields[4].setText(movie.get("Rated"));
-                        fields[5].setText(movie.get("Runtime"));
+                        fields[0].setText(movie.get("imdbID"));
+                        fields[1].setText(movie.get("Title"));
+                        fields[2].setText(movie.get("Year"));
+                        fields[3].setText(movie.get("Genre"));
+                        fields[4].setText(movie.get("Actors"));
+                        fields[5].setText(movie.get("Rated"));
+                        fields[6].setText(movie.get("Runtime"));
                         plot.setText(movie.get("Plot"));
                     }
                 }
