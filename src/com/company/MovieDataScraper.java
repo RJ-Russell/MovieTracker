@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 
 class MovieDataScraper {
@@ -27,7 +28,7 @@ class MovieDataScraper {
 
     String charset = "UTF-8";
 
-    InputStream input = new URL(url).openStream();
+    InputStream input = new URLConnection(url).openStream();
     InputStreamReader stream = new InputStreamReader(input, charset);
 
     TypeToken token = new TypeToken<Map<String, String>>(){};
