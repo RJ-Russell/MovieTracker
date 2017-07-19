@@ -9,7 +9,7 @@ import java.util.Map;
 
 class TrackerGui {
  //   MovieDB db = new MovieDB();
-    private final MovieDataScraper omdb = new MovieDataScraper();
+    private final OMDBMovieData omdb = new OMDBMovieData();
 
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;

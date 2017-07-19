@@ -7,16 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Map;
 
-class MovieDataScraper {
-  Map<String, String> getMovieData(String imdbId, String movie, String year) throws IOException {
+class OMDBMovieData implements DataSource {
+  @Override
+  public Map<String, String> getMovieData(String imdbId, String title, String year) throws IOException {
 
-    movie = movie.replace(' ', '+');
+    title = title.replace(' ', '+');
 
     String imdbIdUrl = "i=" + imdbId;
-    String titleUrl = "t=" + movie;
+    String titleUrl = "t=" + title;
     String yearUrl = "&y=" + (year.equals("") ? "" : year);
     String plotAndFormat = "&plot=short&r=json";
     String url = "http://omdbapi.com/?";// + titleUrl + yearUrl + plotAndFormat;
@@ -28,19 +28,12 @@ class MovieDataScraper {
 
     String charset = "UTF-8";
 
-    InputStream input = new URLConnection(url).openStream();
+    InputStream input = new URL(url).openStream();
     InputStreamReader stream = new InputStreamReader(input, charset);
 
-    TypeToken token = new TypeToken<Map<String, String>>(){};
+    TypeToken token = new TypeToken<Map<String, String>>() {
+    };
 
-//    System.out.println(map.get("imdbID"));
-//    System.out.println(map.get("Title"));
-//    System.out.println(map.get("Year"));
-//    System.out.println(map.get("Genre"));
-//    System.out.println(map.get("Actors"));
-//    System.out.println(map.get("Rated"));
-//    System.out.println(map.get("Runtime"));
-//    System.out.println(map.get("Plot"));
     return new Gson().fromJson(stream, token.getType());
   }
 }
