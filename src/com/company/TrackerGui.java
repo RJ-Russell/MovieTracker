@@ -163,36 +163,35 @@ class TrackerGui {
         addPanelContent(labelPanel, fieldPanel, labels, fields, plot);
 
         JButton addBut = new JButton("Add Movie");
-        JButton omdbBut = new JButton("Search IMDB");
+        JButton searchWebBut = new JButton("Search Web");
         JButton clearBut = new JButton("Clear Fields");
 
 
         JPanel buttonPanel = new JPanel(new BorderLayout());
         buttonPanel.add(addBut, BorderLayout.EAST);
-        buttonPanel.add(omdbBut, BorderLayout.CENTER);
+        buttonPanel.add(searchWebBut, BorderLayout.CENTER);
         buttonPanel.add(clearBut, BorderLayout.WEST);
 
         panels[3].add(buttonPanel, BorderLayout.SOUTH);
 
         mainContainer.add(panels[3], BorderLayout.EAST);
-        mainFrame.getRootPane().setDefaultButton(omdbBut);
+        mainFrame.getRootPane().setDefaultButton(searchWebBut);
 
         // TODO: Implement adding to database
         addBut.addActionListener((ActionEvent doAddThing) -> JOptionPane.showMessageDialog(
-            mainContainer, "Error: Database not implemented yet.",
-            "Error", JOptionPane.ERROR_MESSAGE
+                mainContainer, "Error: Database not implemented yet.",
+                "Error", JOptionPane.ERROR_MESSAGE
         ));
 
-        omdbBut.addActionListener(doSearchThing -> {
+        searchWebBut.addActionListener(doSearchThing -> {
             Map<String, String> movie = null;
             String imdbId = fields[0].getText();
-            System.out.println("IMDB ID: " + imdbId);
             String title = fields[1].getText();
             String year = fields[2].getText();
             if(title.equals("") && imdbId.equals("")) {
                 JOptionPane.showMessageDialog(
-                    mainContainer, "Error: Please enter the title or the imdb ID",
-                    "Error", JOptionPane.ERROR_MESSAGE
+                        mainContainer, "Error: Please enter the title or the imdb ID",
+                        "Error", JOptionPane.ERROR_MESSAGE
                 );
             } else {
                 try {
@@ -204,8 +203,8 @@ class TrackerGui {
                     title = movie.get("Title");
                     if(title == null) {
                         JOptionPane.showMessageDialog(
-                            mainContainer, "Movie not found in IMDB database",
-                            "Movie Not Found", JOptionPane.INFORMATION_MESSAGE
+                                mainContainer, "Movie not found in IMDB database",
+                                "Movie Not Found", JOptionPane.INFORMATION_MESSAGE
                         );
                     } else {
                         fields[0].setText(movie.get("imdbID"));

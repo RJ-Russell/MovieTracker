@@ -9,14 +9,14 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
 
-class OMDBMovieData implements DataSource {
+class OMDBMovieData  implements DataSource {
   @Override
-  public Map<String, String> getMovieData(String imdbId, String title, String year) throws IOException {
+  public Map<String, String> getMovieData(String imdbId, String movie, String year) throws IOException {
 
-    title = title.replace(' ', '+');
+    movie = movie.replace(' ', '+');
 
     String imdbIdUrl = "i=" + imdbId;
-    String titleUrl = "t=" + title;
+    String titleUrl = "t=" + movie;
     String yearUrl = "&y=" + (year.equals("") ? "" : year);
     String plotAndFormat = "&plot=short&r=json";
     String url = "http://omdbapi.com/?";// + titleUrl + yearUrl + plotAndFormat;
@@ -31,8 +31,7 @@ class OMDBMovieData implements DataSource {
     InputStream input = new URL(url).openStream();
     InputStreamReader stream = new InputStreamReader(input, charset);
 
-    TypeToken token = new TypeToken<Map<String, String>>() {
-    };
+    TypeToken token = new TypeToken<Map<String, String>>(){};
 
     return new Gson().fromJson(stream, token.getType());
   }
