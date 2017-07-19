@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
 
-class OmdbScraper {
-  Map<String, String> getStuff(String imdbId, String movie, String year) throws IOException {
+class MovieDataScraper {
+  Map<String, String> getMovieData(String imdbId, String movie, String year) throws IOException {
 
     movie = movie.replace(' ', '+');
 

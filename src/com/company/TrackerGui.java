@@ -1,7 +1,5 @@
 package com.company;
 
-import org.h2.mvstore.MVMap;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -11,7 +9,7 @@ import java.util.Map;
 
 class TrackerGui {
  //   MovieDB db = new MovieDB();
-    private final OmdbScraper omdb = new OmdbScraper();
+    private final MovieDataScraper omdb = new MovieDataScraper();
 
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
@@ -198,7 +196,7 @@ class TrackerGui {
                 );
             } else {
                 try {
-                    movie = omdb.getStuff(imdbId, title, year);
+                    movie = omdb.getMovieData(imdbId, title, year);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
