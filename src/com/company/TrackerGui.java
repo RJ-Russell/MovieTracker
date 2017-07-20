@@ -7,9 +7,13 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * @author RJ Russell
+ */
+
 class TrackerGui {
  //   MovieDB db = new MovieDB();
-    private final OMDBMovieData omdb = new OMDBMovieData();
+    private final OmdbApi omdb = new OmdbApi();
 
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;

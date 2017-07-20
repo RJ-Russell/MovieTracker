@@ -1,10 +1,9 @@
 package com.company;
 
 /**
- * Created on 7/19/17
- *
  * @author RJ Russell
  */
+
 class Movie {
     private String imdbId;
     private String title;

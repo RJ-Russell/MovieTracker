@@ -1,6 +1,7 @@
 package com.company;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,14 +12,29 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created on 7/19/17
- *
  * @author RJ Russell
  */
-class MovieDBMovieData implements DataSource {
-    @Override
-    public Map<String, String> getMovieData(String imdbId, String title, String year) throws IOException {
-        String url = "http://www.theimdbapi.org/api/find/movie?title=transformers&year=2007";
+
+class ImdbApi {
+    MovieData[] getMovieData(String imdbId, String title, String year) throws IOException {
+        title = title.replace(" ", "+");
+
+        // TODO: If searching with IMDB ID, returns single object.
+        // TODO: If searching by title, returns an array of objects.
+        String url = "http://www.theimdbapi.org/api";
+        if (!imdbId.equals("")) {
+            url += "/movie?movie_id=" + imdbId;
+        } else if (!title.equals("")) {
+            url += "/find/movie?title=" + title;
+            if(!year.equals("")) {
+                url += "&year=" + year;
+            }
+        } else {
+            System.out.println("Not enough info provided.");
+            return null;
+        }
+        System.out.println(url);
+
         URLConnection connection = new URL(url).openConnection();
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
         connection.connect();
@@ -26,17 +42,30 @@ class MovieDBMovieData implements DataSource {
         BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder sb = new StringBuilder();
         String line;
-        while((line = br.readLine()) != null) {
+        while ((line = br.readLine()) != null) {
             sb.append(line).append("\n");
         }
 
         Gson gson = new Gson();
 
-        MovieData[] movieResponse = gson.fromJson(sb.toString(), MovieData[].class);
-        for(MovieData v : movieResponse) {
-            System.out.println(v);
+        MovieData[] movieResponseA = null;
+        MovieData movieResponseS = null;
+        try {
+            movieResponseA = gson.fromJson(sb.toString(), MovieData[].class);
+            for (MovieData v : movieResponseA) {
+                System.out.println(v);
+            }
+        } catch(JsonSyntaxException | IllegalStateException e) {
+            movieResponseS = gson.fromJson(sb.toString(), MovieData.class);
+            System.out.println(movieResponseS);
         }
-        return null;
+
+        if(movieResponseA == null) {
+            movieResponseA = new MovieData[1];
+            movieResponseA[0] = movieResponseS;
+        }
+
+        return movieResponseA;
     }
 }
 
@@ -57,6 +86,7 @@ class MovieData {
     private String rating_count;
     private String storyline;
     private String[] stars;
+
     private String year;
     private String[] genre;
     private List<TrailerData> trailer;
@@ -74,12 +104,12 @@ class MovieData {
                 "Movie Length: " + length + "\n" +
                 "Storyline: " + storyline + "\n" +
                 "Stars: " + Arrays.stream(stars)
-                    .map(String::toString)
-                    .collect(Collectors.joining(", ")) + "\n" +
+                .map(String::toString)
+                .collect(Collectors.joining(", ")) + "\n" +
                 "Year: " + year + "\n" +
                 "Genre: " + Arrays.stream(genre)
-                    .map(String::toString)
-                    .collect(Collectors.joining(", ")) + "\n";
+                .map(String::toString)
+                .collect(Collectors.joining(", ")) + "\n";
     }
 }
 
@@ -102,4 +132,14 @@ class TrailerData {
     private String mimeType;
     private String definition;
     private String videoUrl;
+}
+
+class Error {
+    private String _type;
+    private String message;
+
+    @Override
+    public String toString() {
+        return message + "\n\n";
+    }
 }

@@ -3,8 +3,9 @@ package com.company;
 import java.sql.*;
 
 /**
- * Created by chupacabra on 6/15/16.
+ * @author RJ Russell
  */
+
 public class MovieDB {
     private static final String JDBC_DRIVER = "org.h2.Driver";
     private static final String DB_URL =
