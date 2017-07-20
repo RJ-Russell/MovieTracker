@@ -4,7 +4,9 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        TrackerGui tracker = new TrackerGui();
-        tracker.startTracker();
+//        TrackerGui tracker = new TrackerGui();
+//        tracker.startTracker();
+        MovieDBMovieData  md = new MovieDBMovieData();
+        md.getMovieData("", "","");
     }
 }
