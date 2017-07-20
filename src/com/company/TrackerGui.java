@@ -13,13 +13,13 @@ import java.util.Map;
 
 class TrackerGui {
  //   MovieDB db = new MovieDB();
-    private final OmdbApi omdb = new OmdbApi();
+    private final ImdbApi imdb = new ImdbApi();
 
     private final Color background = new Color(121,97,50);
     private final Color foreground = Color.WHITE;
     private final JPanel[] panels = new JPanel[5];
     private final String[] labels =
-        {"IMDB ID", "Title", "Year", "Genre", "Actors", "Rated", "Runtime", "Plot"};
+        {"IMDB ID", "Title", "Year", "Content Rating", "Genre", "Actors", "Rating", "Runtime", "Plot"};
 
     private JFrame mainFrame;
     private Container mainContainer;
@@ -188,7 +188,7 @@ class TrackerGui {
         ));
 
         searchWebBut.addActionListener(doSearchThing -> {
-            Map<String, String> movie = null;
+            MovieData[] movie = null;
             String imdbId = fields[0].getText();
             String title = fields[1].getText();
             String year = fields[2].getText();
@@ -199,26 +199,28 @@ class TrackerGui {
                 );
             } else {
                 try {
-                    movie = omdb.getMovieData(imdbId, title, year);
+                    movie = imdb.getMovieData(imdbId, title, year);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 if(movie != null) {
-                    title = movie.get("Title");
-                    if(title == null) {
+                    title = movie[0].getTitle();
+                    if(title == null || title.isEmpty()) {
                         JOptionPane.showMessageDialog(
                                 mainContainer, "Movie not found in IMDB database",
                                 "Movie Not Found", JOptionPane.INFORMATION_MESSAGE
                         );
+                        clearFields(fields, plot);
                     } else {
-                        fields[0].setText(movie.get("imdbID"));
-                        fields[1].setText(movie.get("Title"));
-                        fields[2].setText(movie.get("Year"));
-                        fields[3].setText(movie.get("Genre"));
-                        fields[4].setText(movie.get("Actors"));
-                        fields[5].setText(movie.get("Rated"));
-                        fields[6].setText(movie.get("Runtime"));
-                        plot.setText(movie.get("Plot"));
+                        fields[0].setText(movie[0].getImdb_id());
+                        fields[1].setText(movie[0].getTitle());
+                        fields[2].setText(movie[0].getYear());
+                        fields[3].setText(movie[0].getContent_rating());
+                        fields[4].setText(movie[0].getGenre());
+                        fields[5].setText(movie[0].getStars());
+                        fields[6].setText(movie[0].getRating());
+                        fields[7].setText(movie[0].getLength());
+                        plot.setText(movie[0].getDescription());
                     }
                 }
 
@@ -226,11 +228,15 @@ class TrackerGui {
         });
 
         clearBut.addActionListener(e -> {
-            for(int i = 0; i < labels.length - 1; ++i) {
-                fields[i].setText("");
-            }
-            plot.setText("");
+            clearFields(fields, plot);
         });
+    }
+
+    private void clearFields(JTextField[] fields, JTextArea plot) {
+        for(int i = 0; i < labels.length - 1; ++i) {
+            fields[i].setText("");
+        }
+        plot.setText("");
     }
 
     private void removePanelShow() {

@@ -8,9 +8,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//        TrackerGui tracker = new TrackerGui();
-//        tracker.startTracker();
-        ImdbApi md = new ImdbApi();
-        md.getMovieData("", "", "");
+        TrackerGui tracker = new TrackerGui();
+        tracker.startTracker();
     }
 }

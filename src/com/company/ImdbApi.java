@@ -48,24 +48,19 @@ class ImdbApi {
 
         Gson gson = new Gson();
 
-        MovieData[] movieResponseA = null;
-        MovieData movieResponseS = null;
+        MovieData[] movieResponse = null;
         try {
-            movieResponseA = gson.fromJson(sb.toString(), MovieData[].class);
-            for (MovieData v : movieResponseA) {
+            movieResponse = gson.fromJson(sb.toString(), MovieData[].class);
+            for (MovieData v : movieResponse) {
                 System.out.println(v);
             }
         } catch(JsonSyntaxException | IllegalStateException e) {
-            movieResponseS = gson.fromJson(sb.toString(), MovieData.class);
-            System.out.println(movieResponseS);
+            movieResponse = new MovieData[1];
+            movieResponse[0] = gson.fromJson(sb.toString(), MovieData.class);
+            System.out.println(movieResponse);
         }
 
-        if(movieResponseA == null) {
-            movieResponseA = new MovieData[1];
-            movieResponseA[0] = movieResponseS;
-        }
-
-        return movieResponseA;
+        return movieResponse;
     }
 }
 
@@ -93,7 +88,6 @@ class MovieData {
 
     @Override
     public String toString() {
-
         return "Title: " + title + "\n" +
                 "Rating: " + rating + "\n" +
                 "Description: " + description + "\n" +
@@ -103,13 +97,61 @@ class MovieData {
                 "Director: " + director + "\n" +
                 "Movie Length: " + length + "\n" +
                 "Storyline: " + storyline + "\n" +
-                "Stars: " + Arrays.stream(stars)
-                .map(String::toString)
-                .collect(Collectors.joining(", ")) + "\n" +
+                "Stars: " + getStars() + "\n" +
                 "Year: " + year + "\n" +
-                "Genre: " + Arrays.stream(genre)
+                "Genre: " + getGenre() + "\n";
+    }
+
+    String getRating() {
+        return rating;
+    }
+
+    String getDescription() {
+        return description;
+    }
+
+    String getTitle() {
+        return title;
+    }
+
+    String getRelease_date() {
+        return release_date;
+    }
+
+    String getContent_rating() {
+        return content_rating;
+    }
+
+    String getImdb_id() {
+        return imdb_id;
+    }
+
+    String getDirector() {
+        return director;
+    }
+
+    String getLength() {
+        return length;
+    }
+
+    String getStoryline() {
+        return storyline;
+    }
+
+    String getStars() {
+        return Arrays.stream(stars)
                 .map(String::toString)
-                .collect(Collectors.joining(", ")) + "\n";
+                .collect(Collectors.joining(", "));
+    }
+
+    String getYear() {
+        return year;
+    }
+
+    String getGenre() {
+        return Arrays.stream(genre)
+                .map(String::toString)
+                .collect(Collectors.joining(", "));
     }
 }
 
