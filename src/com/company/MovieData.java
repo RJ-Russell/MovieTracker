@@ -8,21 +8,21 @@ import java.util.stream.Collectors;
  */
 
 class MovieData {
-    private String rating;
-    private String description;
-    private String title;
-    private String release_date;
-    private String content_rating;
-    private String original_title;
-    private String[] writers;
     private String imdb_id;
-    private String director;
-    private String length;
-    private String rating_count;
-    private String storyline;
-    private String[] stars;
+    private String title;
     private String year;
+    private String content_rating;
     private String[] genre;
+    private String[] stars;
+    private String rating;
+    private String length;
+    private String storyline;
+    private String description;
+//    private String release_date;
+//    private String original_title;
+//    private String[] writers;
+//    private String director;
+//    private String rating_count;
 
 // Additional fields in the JSON that are not wanted in the returned value.
 //    private List<CastData> cast;
@@ -32,42 +32,37 @@ class MovieData {
 
     @Override
     public String toString() {
-        return "Title: " + title + "\n" +
-                "Rating: " + rating + "\n" +
-                "Description: " + description + "\n" +
-                "Release Date: " + release_date + "\n" +
-                "Content Rating: " + content_rating + "\n" +
-                "IMDB Id: " + imdb_id + "\n" +
-                "Director: " + director + "\n" +
-                "Movie Length: " + length + "\n" +
-                "Storyline: " + storyline + "\n" +
-                "Stars: " + getStars() + "\n" +
+        return  "IMDB Id: " + imdb_id + "\n" +
+                "Title: " + title + "\n" +
                 "Year: " + year + "\n" +
-                "Genre: " + getGenre() + "\n";
-    }
-
-    String getRating() {
-        return rating;
-    }
-
-    String getDescription() {
-        return description;
-    }
-
-    String getTitle() {
-        return title;
-    }
-
-    String getContent_rating() {
-        return content_rating;
+                "Content Rating: " + content_rating + "\n" +
+                "Genre: " + getGenre() + "\n" +
+                "Stars: " + getStars() + "\n" +
+                "Rating: " + rating + "\n" +
+                "Movie Length: " + length + "\n" +
+                "Description: " + description + "\n";
     }
 
     String getImdb_id() {
         return imdb_id;
     }
 
-    String getLength() {
-        return length;
+    String getTitle() {
+        return title;
+    }
+
+    String getYear() {
+        return year;
+    }
+
+    String getContent_rating() {
+        return content_rating;
+    }
+
+    String getGenre() {
+        return Arrays.stream(genre)
+                .map(String::toString)
+                .collect(Collectors.joining(", "));
     }
 
     String getStars() {
@@ -76,14 +71,16 @@ class MovieData {
                 .collect(Collectors.joining(", "));
     }
 
-    String getYear() {
-        return year;
+    String getRating() {
+        return rating;
     }
 
-    String getGenre() {
-        return Arrays.stream(genre)
-                .map(String::toString)
-                .collect(Collectors.joining(", "));
+    String getLength() {
+        return length;
+    }
+
+    String getDescription() {
+        return description;
     }
 }
 

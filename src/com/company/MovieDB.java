@@ -9,7 +9,7 @@ import java.sql.*;
 public class MovieDB {
     private static final String JDBC_DRIVER = "org.h2.Driver";
     private static final String DB_URL =
-            "jdbc:h2:~/Projects/Java/movieTracker/movieDB";
+            "jdbc:h2:~/Projects/movieTracker/movies";
     private static final String DB_USERNAME = "movies";
     private static final String DB_PASSWORD = "movies";
     private Connection conn;
@@ -18,7 +18,8 @@ public class MovieDB {
     private static final String CREATE_TABLE = "CREATE TABLE `movies`"
             + "(`imdb_id` VARCHAR(255) NOT NULL PRIMARY KEY, "
             + "`title` VARCHAR(255), "
-            + "`year` INTEGER(4), "
+            + "`year` VARCHAR(255), "
+            + "`content_rating` VARCHAR(255), "
             + "`genres` VARCHAR(255), "
             + "`actors` VARCHAR(255), "
             + "`rating` VARCHAR(255), "
@@ -28,6 +29,7 @@ public class MovieDB {
     MovieDB() {
         connectDatabase();
     }
+
     private void connectDatabase() {
         try {
             Class.forName(JDBC_DRIVER);
@@ -44,4 +46,5 @@ public class MovieDB {
             e.printStackTrace();
         }
     }
+
 }
