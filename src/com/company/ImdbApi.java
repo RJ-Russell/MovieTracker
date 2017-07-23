@@ -15,18 +15,16 @@ import java.net.URLConnection;
 
 class ImdbApi {
     MovieData[] getMovieData(String imdbId, String title, String year) throws IOException {
-        title = title.replace(" ", "+");
 
         String url = "http://www.theimdbapi.org/api";
         if (!imdbId.equals("")) {
             url += "/movie?movie_id=" + imdbId;
         } else if (!title.equals("")) {
+            title = title.replace(" ", "+");
             url += "/find/movie?title=" + title;
             if(!year.equals("")) {
                 url += "&year=" + year;
             }
-        } else {
-            return null;
         }
         System.out.println(url);
 
