@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
  */
 
 class MovieData {
+    private String _id;
     private String imdb_id;
     private String title;
     private String year;
@@ -16,7 +17,6 @@ class MovieData {
     private String[] stars;
     private String rating;
     private String length;
-    private String storyline;
     private String description;
 //    private String release_date;
 //    private String original_title;
@@ -29,10 +29,27 @@ class MovieData {
 //    private URLData url;
 //    private PosterData poster;
 //    private List<TrailerData> trailer;
+    MovieData() {}
+
+    MovieData(String _id, String imdb_id, String title, String year,
+              String content_rating, String[] genre, String[] stars,
+              String rating, String length, String description) {
+        this._id = _id;
+        this.imdb_id = imdb_id;
+        this.title = title;
+        this.year = year;
+        this.content_rating = content_rating;
+        this.genre = genre;
+        this.stars = stars;
+        this.rating = rating;
+        this.length = length;
+        this.description = description;
+    }
 
     @Override
     public String toString() {
-        return  "IMDB Id: " + imdb_id + "\n" +
+        return  "ID: " + _id + "\n" +
+                "IMDB Id: " + imdb_id + "\n" +
                 "Title: " + title + "\n" +
                 "Year: " + year + "\n" +
                 "Content Rating: " + content_rating + "\n" +

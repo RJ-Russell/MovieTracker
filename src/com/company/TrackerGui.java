@@ -26,7 +26,7 @@ class TrackerGui {
     private static final JPanel[] panels = new JPanel[5];
     // Array of labels for each potential field on a panel.
     private static final String[] labels =
-            {"IMDB ID", "Title", "Year", "Content Rating", "Genre", "Actors", "Rating", "Runtime", "Plot"};
+            {"_ID", "IMDB ID", "Title", "Year", "Content Rating", "Genre", "Actors", "Rating", "Runtime", "Plot"};
 
     // Object for database. Initializes connection on creation.
     private MovieDB db = null;
@@ -57,7 +57,7 @@ class TrackerGui {
 
         // Retrieves content pane so objects may be added to it.
         mainContainer = mainFrame.getContentPane();
-        // Sets the layour for the main fram.
+        // Sets the layout for the main fram.
         mainContainer.setLayout(new BorderLayout());
     }
 
@@ -166,9 +166,9 @@ class TrackerGui {
                 "Simple directions for the Movie Tracker Application\n\n"    +
                         "The Home and Exit buttons should be self explanatory. " +
                         "If you happen to be confused by them, punch yourself.\n\n"
-                        + "1. Search Movies: \n\n"
-                        + "2. Add Movie: \n\n"
-                        + "3. Remove Movie: \n\n"
+                        + "1. Search Movies:\n    Coming Soon!\n\n"
+                        + "2. Add Movie: \n    Coming Soon!\n\n"
+                        + "3. Remove Movie:\n    Coming Soon!\n\n"
         );
 
         // Add the text area to the panel.
@@ -297,14 +297,13 @@ class TrackerGui {
         // current movie listed in the fields to the database.
         addBut.addActionListener(doAddThing -> {
             // Ensures the id field is not null or empty.
-            if(fields[0].getText() != null && !fields[0].getText().isEmpty()) {
+            if(fields[1].getText() != null && !fields[1].getText().isEmpty()) {
                 // Ensures the year is in a valid year format.
-                if (fields[2].getText().matches("^(19|20)\\d{2}$")) {
+                if (fields[3].getText().matches("^(19|20)\\d{2}$")) {
                     // Attempt to insert into database.
-                    try {
-                        db.insertMovie(fields[0].getText(), fields[1].getText(),
-                                fields[2].getText(), fields[3].getText(), fields[4].getText(),
-                                fields[5].getText(), fields[6].getText(), fields[7].getText(),
+                    try { db.insertMovie(fields[1].getText(), fields[2].getText(),
+                                fields[3].getText(), fields[4].getText(), fields[5].getText(),
+                                fields[6].getText(), fields[7].getText(), fields[8].getText(),
                                 plot.getText());
                         // Show success message if movie insert is successful.
                         JOptionPane.showMessageDialog(
@@ -327,7 +326,7 @@ class TrackerGui {
                 }
             } else {
                 // If missing movie id (field[0]), display error message.
-                optionPaneErrorMessage("Movie is missing an ID!",
+                optionPaneErrorMessage("Movie is missing an IMDB ID!",
                                        "Error: Unsuccessful Operation");
             }
         });
@@ -345,9 +344,9 @@ class TrackerGui {
             // Array of MovieData objects to store all the results.
             MovieData[] movie = null;
             // Gets the text from each of the corresponding fields.
-            String imdbId = fields[0].getText();
-            String title = fields[1].getText();
-            String year = fields[2].getText();
+            String imdbId = fields[1].getText();
+            String title = fields[2].getText();
+            String year = fields[3].getText();
             // Checks to ensure that the search operation has a movie id
             // or a title before sending the data to the API.
             if(imdbId.isEmpty() && title.isEmpty()) {
@@ -379,14 +378,14 @@ class TrackerGui {
                                                "Movie Not Found");
                         clearFields(fields, plot);
                     } else {
-                        fields[0].setText(movie[0].getImdb_id());
-                        fields[1].setText(movie[0].getTitle());
-                        fields[2].setText(movie[0].getYear());
-                        fields[3].setText(movie[0].getContent_rating());
-                        fields[4].setText(movie[0].getGenre());
-                        fields[5].setText(movie[0].getStars());
-                        fields[6].setText(movie[0].getRating());
-                        fields[7].setText(movie[0].getLength());
+                        fields[1].setText(movie[0].getImdb_id());
+                        fields[2].setText(movie[0].getTitle());
+                        fields[3].setText(movie[0].getYear());
+                        fields[4].setText(movie[0].getContent_rating());
+                        fields[5].setText(movie[0].getGenre());
+                        fields[6].setText(movie[0].getStars());
+                        fields[7].setText(movie[0].getRating());
+                        fields[8].setText(movie[0].getLength());
                         plot.setText(movie[0].getDescription());
                     }
                 }
@@ -413,7 +412,7 @@ class TrackerGui {
         JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
         fieldPanel.setBackground(BACKGROUND);
 
-        JTextField[] fields = new JTextField[2];
+        JTextField[] fields = new JTextField[4];
 
         panels[4] = new JPanel(new BorderLayout());
         panels[4].setBackground(BACKGROUND);
@@ -470,6 +469,7 @@ class TrackerGui {
                 fieldPanel.add(p);
             }
         }
+        fields[0].setEditable(false);
     }
 
     private void readyPanelsForSwitching() {
