@@ -2,6 +2,7 @@ package com.company;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ class TrackerGui {
     // The menu panel contains all the main buttons on the left, and a section
     // on the right where each of the other panels are swapped out based on
     // which left column button is selected.
-    private static final JPanel[] panels = new JPanel[5];
+    private static final JPanel[] panels = new JPanel[6];
     // Array of labels for each potential field on a panel.
     private static final String[] labels = {"_ID", "IMDB ID", "Title", "Year",
             "Content Rating", "Genre", "Actors", "Rating", "Runtime\n (min)",
@@ -171,7 +172,7 @@ class TrackerGui {
                         + "2. Add Movie: \n    Coming Soon!\n\n"
                         + "3. Remove Movie:\n    Coming Soon!\n\n"
         );
-
+        instructions.setEditable(false);
         // Add the text area to the panel.
         panels[1].add(instructions);
         // Add the home panel to the right side of the main container.
@@ -402,13 +403,6 @@ class TrackerGui {
         clearBut.addActionListener(e -> clearFields(fields, plot));
     }
 
-    private void clearFields(JTextField[] fields, JTextArea plot) {
-        for(int i = 0; i < labels.length - 1; ++i) {
-            fields[i].setText("");
-        }
-        plot.setText("");
-    }
-
     private void removePanelShow() {
         mainFrame.setTitle("Movie Tracker: Remove Movie");
 
@@ -479,6 +473,10 @@ class TrackerGui {
         fields[0].setEditable(false);
     }
 
+    private void buildResultsPanel(MovieData[] movies) {
+
+    }
+
     private void readyPanelsForSwitching() {
         for(int i = 1; i < panels.length; ++i) {
             if(panels[i] != null && panels[i].isDisplayable()) {
@@ -512,6 +510,14 @@ class TrackerGui {
         );
     }
 
+    private void clearFields(JTextField[] fields, JTextArea plot) {
+        for(int i = 0; i < labels.length - 1; ++i) {
+            fields[i].setText("");
+        }
+        plot.setText("");
+    }
+
+
     private void consoleDisplayResults(MovieData[] md) {
         if(md == null) {
             System.out.println("No movies in database!");
@@ -521,4 +527,5 @@ class TrackerGui {
             }
         }
     }
+
 }
