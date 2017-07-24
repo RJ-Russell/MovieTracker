@@ -25,8 +25,9 @@ class TrackerGui {
     // which left column button is selected.
     private static final JPanel[] panels = new JPanel[5];
     // Array of labels for each potential field on a panel.
-    private static final String[] labels =
-            {"_ID", "IMDB ID", "Title", "Year", "Content Rating", "Genre", "Actors", "Rating", "Runtime", "Plot"};
+    private static final String[] labels = {"_ID", "IMDB ID", "Title", "Year",
+            "Content Rating", "Genre", "Actors", "Rating", "Runtime\n (min)",
+            "Plot"};
 
     // Object for database. Initializes connection on creation.
     private MovieDB db = null;
@@ -215,10 +216,10 @@ class TrackerGui {
         addPanelContent(labelPanel, fieldPanel, labels, fields, plot);
 
         // Create search button.
-        JButton goSearch = new JButton("Search Movie Collection");
+        JButton dbSearchBut = new JButton("Search Movie Collection");
 
         // Add the search button to the bottom of the search panel.
-        panels[2].add(goSearch, BorderLayout.SOUTH);
+        panels[2].add(dbSearchBut, BorderLayout.SOUTH);
         // Add the search panel to the left on the main container.
         mainContainer.add(panels[2], BorderLayout.EAST);
 
@@ -229,7 +230,7 @@ class TrackerGui {
         // Action listener for the search panel. Search is done based on the
         // IMDB Id or the title and year (optional) of the movie. Displays a
         // single result utilizing all the fields on the search panel.
-        goSearch.addActionListener(doSearchThing ->
+        dbSearchBut.addActionListener(doSearchThing ->
                 optionPaneErrorMessage("Database Not Implemented Yet\n",
                         "Database Error")
         );
@@ -272,7 +273,7 @@ class TrackerGui {
 
         // Creates the add, search web and clear fields buttons.
         JButton addBut = new JButton("Add Movie");
-        JButton searchWebBut = new JButton("Search Web");
+        JButton webSearchBut = new JButton("Search Web");
         JButton clearBut = new JButton("Clear Fields");
 
         // Creates the panel to place the buttons on.
@@ -280,7 +281,7 @@ class TrackerGui {
         // Sets the add button to the left on the button panel.
         buttonPanel.add(addBut, BorderLayout.EAST);
         // Sets the search web button in the center on the button panel.
-        buttonPanel.add(searchWebBut, BorderLayout.CENTER);
+        buttonPanel.add(webSearchBut, BorderLayout.CENTER);
         // Sets the clear fields button to the right on the button panel.
         buttonPanel.add(clearBut, BorderLayout.WEST);
 
@@ -290,7 +291,7 @@ class TrackerGui {
         // Adds the add movie panel to the left on the main container.
         mainContainer.add(panels[3], BorderLayout.EAST);
         // Sets the search web button as the default button.
-        mainFrame.getRootPane().setDefaultButton(searchWebBut);
+        mainFrame.getRootPane().setDefaultButton(webSearchBut);
 
         // TODO: Implement database
         // Adds an action listener to the add movie button. Inserts the
@@ -312,6 +313,7 @@ class TrackerGui {
                                 JOptionPane.INFORMATION_MESSAGE
                         );
                         // Clear the fields on successful insertion.
+                        consoleDisplayResults(db.searchAll());
                         clearFields(fields, plot);
                     } catch (SQLException e) {
                         // If something bad happened, show error message.
@@ -340,7 +342,7 @@ class TrackerGui {
         //
         // Currently only takes the first movie in the array of movies
         // returned by the API.
-        searchWebBut.addActionListener(doSearchThing -> {
+        webSearchBut.addActionListener(doSearchThing -> {
             // Array of MovieData objects to store all the results.
             MovieData[] movie = null;
             // Gets the text from each of the corresponding fields.
@@ -358,6 +360,11 @@ class TrackerGui {
                 try {
                     // Hit the API to gather movie data.
                     movie = imdbApi.getMovieData(imdbId, title, year);
+                    // TODO: Remove this later. --------------------------------
+                    System.out.println("RESULTS AFTER IMDB API HIT");
+                    System.out.println("--------------------------");
+                    consoleDisplayResults(movie);
+                    //----------------------------------------------------------
                 } catch (IOException e) {
                     // If something weird happened. This should not ever be
                     // executed unless there is an issue with the API
@@ -503,5 +510,15 @@ class TrackerGui {
         JOptionPane.showMessageDialog(
                 mainContainer, message, error, JOptionPane.ERROR_MESSAGE
         );
+    }
+
+    private void consoleDisplayResults(MovieData[] md) {
+        if(md == null) {
+            System.out.println("No movies in database!");
+        } else {
+            for (MovieData d : md) {
+                System.out.println(d);
+            }
+        }
     }
 }

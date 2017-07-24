@@ -44,9 +44,6 @@ class ImdbApi {
         MovieData[] movieResponse;
         try {
             movieResponse = gson.fromJson(sb.toString(), MovieData[].class);
-            for (MovieData v : movieResponse) {
-                System.out.println(v);
-            }
         } catch(JsonSyntaxException | IllegalStateException e) {
             movieResponse = new MovieData[1];
             movieResponse[0] = gson.fromJson(sb.toString(), MovieData.class);

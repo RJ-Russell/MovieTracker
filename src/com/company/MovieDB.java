@@ -52,7 +52,7 @@ class MovieDB {
                 DB_USERNAME,DB_PASSWORD);
         stmt = conn.createStatement();
         stmt.execute(CREATE_TABLE);
-        System.out.println("Table made successfully");
+        System.out.println("Table created successfully\n\n");
     }
 
     /**
@@ -104,15 +104,19 @@ class MovieDB {
         pstmt.close();
     }
 
+    MovieData[] searchAll() throws SQLException {
+        String query = "SELECT * FROM movies;";
+        return searchQuery(query);
+    }
+
     /**
      * Gathers the data for each movie entry in the database.
      * @return Array of MovieData objects.
      * @throws SQLException
      */
-    MovieData[] getResults() throws SQLException {
-        String resultQuery = "SELECT * FROM `movies`";
+    private MovieData[] searchQuery(String query) throws SQLException {
         stmt = conn.createStatement(TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        ResultSet rs = stmt.executeQuery(resultQuery);
+        ResultSet rs = stmt.executeQuery(query);
 
         int rows = 0;
         if(rs.last()) {
