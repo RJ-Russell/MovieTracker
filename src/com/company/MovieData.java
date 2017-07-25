@@ -60,6 +60,14 @@ class MovieData {
                 "Description: " + description + "\n";
     }
 
+    String[] toArray() {
+        if(_id == null || _id.isEmpty()) {
+            _id = "N/A";
+        }
+        return new String[]{_id, imdb_id, title, year, content_rating,
+                            getGenre(), getStars(), rating, length, description};
+    }
+
     String getImdb_id() {
         return imdb_id;
     }

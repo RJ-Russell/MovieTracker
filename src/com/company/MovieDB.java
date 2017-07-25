@@ -150,8 +150,8 @@ class MovieDB {
             String runtime = rs.getString("RUNTIME");
             String plot = rs.getString("PLOT");
 
-            movieResults[i] = new MovieData(id, imdbId, title, year, contentRating,
-                    genre, stars, rating, runtime, plot);
+            movieResults[i] = new MovieData(id, imdbId, title, year,
+                    contentRating, genre, stars, rating, runtime, plot);
             ++i;
         }
         return movieResults;

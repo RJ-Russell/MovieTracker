@@ -2,7 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -65,7 +64,7 @@ class TrackerGui {
 
     /**
      * Starts the GUI. Creates the main frame, sets initial configurations.
-     * Calls the mainPanelShow function, homePanelShow then packs the main frame
+     * Calls the mainPanelShow function, buildHomePanel then packs the main frame
      * and sets each the initial frame visible.
      */
     void startTracker() {
@@ -73,9 +72,9 @@ class TrackerGui {
         panels[0] = new JPanel(new GridLayout(5,1));
 
         // Set up menu buttons on left of panel.
-        menuPanelShow();
+        buildMenuPanel();
         // Set up home panel on right of panel.
-        homePanelShow();
+        buildHomePanel();
         // Pack objects into the main frame.
         mainFrame.pack();
         // Set the main frame to be visible.
@@ -86,7 +85,7 @@ class TrackerGui {
      * Sets up the menu panel. This panel consists of five buttons:
      * Home, Search, Add, Remove, and Exit.
      */
-    private void menuPanelShow() {
+    private void buildMenuPanel() {
         // Set size size of menu panel.
         panels[0].setPreferredSize(new Dimension(175,600));
 
@@ -126,7 +125,7 @@ class TrackerGui {
         // main container.
         homeBut.addActionListener(e -> {
             readyPanelsForSwitching();
-            homePanelShow();
+            buildHomePanel();
         });
 
         searchBut.addActionListener(e -> {
@@ -136,12 +135,12 @@ class TrackerGui {
 
         addBut.addActionListener(e -> {
             readyPanelsForSwitching();
-            addPanelShow();
+            buildAddPanel();
         });
 
         remBut.addActionListener(e -> {
             readyPanelsForSwitching();
-            removePanelShow();
+            buildRemovePanel();
         });
 
         exitBut.addActionListener(actionEvent -> System.exit(0));
@@ -151,7 +150,7 @@ class TrackerGui {
      * Sets up the home panel (panels[1]). The home panel contains basic
      * instructions on how to use the application.
      */
-    private void homePanelShow() {
+    private void buildHomePanel() {
         // Sets the title for the main frame home panel.
         mainFrame.setTitle("Movie Tracker");
         // Creates the home panel and configurations.
@@ -243,7 +242,7 @@ class TrackerGui {
     // fields on the panel. The Search Web button utilizes an API to gather
     // data about the movie and populates the fields with that data. The
     // Add Movie button adds the data in the text fields to the database.
-    private void addPanelShow() {
+    private void buildAddPanel() {
         // Sets the title for adding the add panel.
         mainFrame.setTitle("Movie Tracker: Add Movie");
 
@@ -345,7 +344,7 @@ class TrackerGui {
         // returned by the API.
         webSearchBut.addActionListener(doSearchThing -> {
             // Array of MovieData objects to store all the results.
-            MovieData[] movie = null;
+            MovieData[] movies = null;
             // Gets the text from each of the corresponding fields.
             String imdbId = fields[1].getText();
             String title = fields[2].getText();
@@ -360,12 +359,9 @@ class TrackerGui {
                 // If a valid id or title is supplied.
                 try {
                     // Hit the API to gather movie data.
-                    movie = imdbApi.getMovieData(imdbId, title, year);
-                    // TODO: Remove this later. --------------------------------
-                    System.out.println("RESULTS AFTER IMDB API HIT");
-                    System.out.println("--------------------------");
-                    consoleDisplayResults(movie);
-                    //----------------------------------------------------------
+                    movies = imdbApi.getMovieData(imdbId, title, year);
+//                    consoleDisplayResults(movies);
+                    buildResultsPanel(movies);
                 } catch (IOException e) {
                     // If something weird happened. This should not ever be
                     // executed unless there is an issue with the API
@@ -377,8 +373,8 @@ class TrackerGui {
                 }
 
                 // Checks to see if the API found a movie.
-                if(movie != null) {
-                    title = movie[0].getTitle();
+                if(movies != null) {
+                    title = movies[0].getTitle();
                     if(title == null || title.isEmpty()) {
                         optionPaneErrorMessage("A movie matching the id or" +
                                                " title was not found!\n\nTry modifying" +
@@ -386,15 +382,15 @@ class TrackerGui {
                                                "Movie Not Found");
                         clearFields(fields, plot);
                     } else {
-                        fields[1].setText(movie[0].getImdb_id());
-                        fields[2].setText(movie[0].getTitle());
-                        fields[3].setText(movie[0].getYear());
-                        fields[4].setText(movie[0].getContent_rating());
-                        fields[5].setText(movie[0].getGenre());
-                        fields[6].setText(movie[0].getStars());
-                        fields[7].setText(movie[0].getRating());
-                        fields[8].setText(movie[0].getLength());
-                        plot.setText(movie[0].getDescription());
+                        fields[1].setText(movies[0].getImdb_id());
+                        fields[2].setText(movies[0].getTitle());
+                        fields[3].setText(movies[0].getYear());
+                        fields[4].setText(movies[0].getContent_rating());
+                        fields[5].setText(movies[0].getGenre());
+                        fields[6].setText(movies[0].getStars());
+                        fields[7].setText(movies[0].getRating());
+                        fields[8].setText(movies[0].getLength());
+                        plot.setText(movies[0].getDescription());
                     }
                 }
             }
@@ -403,7 +399,7 @@ class TrackerGui {
         clearBut.addActionListener(e -> clearFields(fields, plot));
     }
 
-    private void removePanelShow() {
+    private void buildRemovePanel() {
         mainFrame.setTitle("Movie Tracker: Remove Movie");
 
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
@@ -432,6 +428,23 @@ class TrackerGui {
                                        "Database Error")
         );
     }
+
+    private void buildResultsPanel(MovieData[] movies) {
+        JTable table = new JTable(new MovieTable(movies, labels));
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        table.setFillsViewportHeight(true);
+        table.setBackground(BACKGROUND);
+        table.setForeground(FOREGROUND);
+
+        panels[5] = new JPanel(new BorderLayout());
+        panels[5].setPreferredSize(new Dimension(800,400));
+        panels[5].add(scrollPane);
+
+        readyPanelsForSwitching();
+        mainContainer.add(panels[5], BorderLayout.EAST);
+    }
+
 
     private void addPanelContent(JPanel labelPanel,
                                  JPanel fieldPanel,
@@ -471,10 +484,6 @@ class TrackerGui {
             }
         }
         fields[0].setEditable(false);
-    }
-
-    private void buildResultsPanel(MovieData[] movies) {
-
     }
 
     private void readyPanelsForSwitching() {
