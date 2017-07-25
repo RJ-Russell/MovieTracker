@@ -29,9 +29,30 @@ class MovieData {
 //    private URLData url;
 //    private PosterData poster;
 //    private List<TrailerData> trailer;
-    MovieData() {}
+//    MovieData() {}
 
     MovieData(String _id, String imdb_id, String title, String year,
+              String content_rating, String[] genre, String[] stars,
+              String rating, String length, String description) {
+        copy(_id, imdb_id, title, year, content_rating, genre, stars, rating,
+                length, description);
+    }
+
+    MovieData(String[] params) {
+        if(params.length == 9) {
+            String[] genre = Arrays.stream(params[4].split(",")).map(String::trim).toArray(String[]::new);
+            String[] stars = Arrays.stream(params[5].split(",")).map(String::trim).toArray(String[]::new);
+            copy(null, params[0], params[1], params[2], params[3], genre, stars,
+                    params[6], params[7], params[8]);
+        } else {
+            String[] genre = Arrays.stream(params[5].split(",")).map(String::trim).toArray(String[]::new);
+            String[] stars = Arrays.stream(params[6].split(",")).map(String::trim).toArray(String[]::new);
+            copy(params[0], params[1], params[2], params[3], params[4], genre,
+                    stars, params[7], params[8], params[9]);
+        }
+    }
+
+    private void copy(String _id, String imdb_id, String title, String year,
               String content_rating, String[] genre, String[] stars,
               String rating, String length, String description) {
         this._id = _id;

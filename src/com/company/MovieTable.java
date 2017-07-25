@@ -1,6 +1,7 @@
 package com.company;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import java.util.Arrays;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Arrays;
  *
  * @author RJ Russell
  */
-public class MovieTable extends AbstractTableModel {
+public class MovieTable extends AbstractTableModel implements TableModel {
 
     private String[][] movies;
     private String[] labels;
@@ -21,17 +22,16 @@ public class MovieTable extends AbstractTableModel {
         }
         this.movies = new String[movies.length][this.labels.length];
 
-
         for(int i = 0; i < movies.length; ++i) {
             this.movies[i] = movies[i].toArray(isAdd);
         }
 
-        for (String[] m : this.movies) {
-            System.out.println();
-            for (int j = 0; j < this.movies[0].length; ++j) {
-                System.out.println(m[j]);
-            }
-        }
+//        for (String[] m : this.movies) {
+//            System.out.println();
+//            for (int j = 0; j < this.movies[0].length; ++j) {
+//                System.out.println(m[j]);
+//            }
+//        }
     }
 
     @Override
@@ -50,6 +50,25 @@ public class MovieTable extends AbstractTableModel {
             return "N/A";
         }
         return this.movies[row][col];
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int col) {
+        return true;
+    }
+
+    @Override
+    public void setValueAt(Object val, int row, int col) {
+        String value = (String) val;
+        if(val == null || value.isEmpty()) {
+            movies[row][col] = "N/A";
+        } else {
+            movies[row][col] = value;
+        }
+    }
+
+    public String[] getRowAt(int row) {
+        return movies[row];
     }
 
     public String getColumnName(int col) {

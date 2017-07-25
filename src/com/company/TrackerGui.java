@@ -3,6 +3,7 @@ package com.company;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.IOException;
@@ -275,7 +276,6 @@ class TrackerGui {
 
         // Creates a panel to put the labels on and configures it.
         JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(123, 15));
         labelPanel.setBackground(BACKGROUND);
 
         // Creates a pnael to put the fields on and configures it.
@@ -389,7 +389,7 @@ class TrackerGui {
                                             "Movie Not Found");
                             clearFields(fields, plot);
                         } else {
-                            consoleDisplayResults(movies);
+//                            consoleDisplayResults(movies);
                             buildResultsPanel(movies, true);
                         }
                     }
@@ -445,7 +445,6 @@ class TrackerGui {
         table.setForeground(FOREGROUND);
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.setAutoCreateColumnsFromModel(false);
         TableColumn column;
         for(int i = 0; i < table.getColumnCount(); ++i) {
             column = table.getColumnModel().getColumn(i);
@@ -511,8 +510,37 @@ class TrackerGui {
 
 
         panels[5] = new JPanel(new BorderLayout());
+        panels[5].setBackground(BACKGROUND);
         panels[5].setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        panels[5].add(scrollPane);
+
+        if(isAdd) {
+            JButton addBut = new JButton("Add Selected Movie");
+            scrollPane.setPreferredSize(new Dimension(WIDTH, HEIGHT - addBut.getPreferredSize().height));
+            panels[5].add(scrollPane, BorderLayout.NORTH);
+            panels[5].add(addBut, BorderLayout.SOUTH);
+
+            addBut.addActionListener(e -> {
+                int row = table.getSelectedRow();
+                if(row < 0) {
+                    optionPaneErrorMessage("Please select a row!", "No row selected");
+                } else {
+                    MovieTable mt = (MovieTable) table.getModel();
+                    String[] rowData = mt.getRowAt(table.getSelectedRow());
+
+                    for(String s : rowData) {
+                        System.out.println(s);
+                    }
+
+                    try {
+                        db.insertMovie(new MovieData(rowData));
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            panels[5].add(scrollPane);
+        }
 
         readyPanelsForSwitching();
         mainContainer.add(panels[5], BorderLayout.EAST);

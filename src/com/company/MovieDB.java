@@ -91,6 +91,26 @@ class MovieDB {
         pstmt.close();
     }
 
+    void insertMovie(MovieData movie) throws SQLException {
+        final String insertStmt = "INSERT INTO `movies`(`_id`,`imdb_id`," +
+                "`title`,`year`,`content_rating`,`genres`,`actors`,`rating`," +
+                "`runtime`,`plot`) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        pstmt = conn.prepareStatement(insertStmt);
+        pstmt.setString(1, movie.getImdb_id());
+        pstmt.setString(2, movie.getTitle());
+        pstmt.setString(3, movie.getYear());
+        pstmt.setString(4, movie.getContent_rating());
+        pstmt.setString(5, movie.getGenre());
+        pstmt.setString(6, movie.getStars());
+        pstmt.setString(7, movie.getRating());
+        pstmt.setString(8, movie.getLength());
+        pstmt.setString(9, movie.getDescription());
+
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
     /**
      * Removes a movie from database matching the given id.
      * @param id: The id for the movie created on insertion of movie.
