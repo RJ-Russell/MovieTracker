@@ -1,6 +1,7 @@
 package com.company;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.Arrays;
 
 /**
  * Created on 7/24/17
@@ -12,12 +13,17 @@ public class MovieTable extends AbstractTableModel {
     private String[][] movies;
     private String[] labels;
 
-    MovieTable(MovieData[] movies, String[] labels) {
-        this.labels = labels;
-        this.movies = new String[movies.length][labels.length];
+    MovieTable(MovieData[] movies, String[] labels, boolean isAdd) {
+        if(isAdd) {
+            this.labels = Arrays.copyOfRange(labels, 1, labels.length);
+        } else {
+            this.labels = labels;
+        }
+        this.movies = new String[movies.length][this.labels.length];
+
 
         for(int i = 0; i < movies.length; ++i) {
-            this.movies[i] = movies[i].toArray();
+            this.movies[i] = movies[i].toArray(isAdd);
         }
 
         for (String[] m : this.movies) {
@@ -38,10 +44,6 @@ public class MovieTable extends AbstractTableModel {
         return this.movies.length;
     }
 
-    public String getColumnName(int col) {
-        return labels[col];
-    }
-
     @Override
     public String getValueAt(int row, int col) {
         if(movies[row][col] == null || movies[row][col].isEmpty()) {
@@ -50,13 +52,11 @@ public class MovieTable extends AbstractTableModel {
         return this.movies[row][col];
     }
 
+    public String getColumnName(int col) {
+        return labels[col];
+    }
+
     public Class getColumnClass(int c) {
-        for(int i = 0; i < movies.length; ++i) {
-           Object[] row = movies[i];
-           if(row[c] != null) {
-               return getValueAt(i, c).getClass();
-           }
-        }
         return String.class;
     }
 }

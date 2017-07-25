@@ -126,11 +126,12 @@ class MovieDB {
         if(rows == 0) {
             return null;
         }
-
+        // TODO: This is for debugging. Remove later.
         System.out.println("ROWS: " + rows);
 
         MovieData[] movieResults = new MovieData[rows];
 
+        // Reset cursor.
         rs.beforeFirst();
         int i = 0;
         while(rs.next()) {

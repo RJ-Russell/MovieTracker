@@ -2,10 +2,12 @@ package com.company;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * @author RJ Russell
@@ -15,6 +17,16 @@ class TrackerGui {
     // GUI Colors.
     private static final Color BACKGROUND = new Color(121,97,50);
     private static final Color FOREGROUND = Color.WHITE;
+
+    private static final int POS_X = 500;
+    private static final int POS_Y = 250;
+
+    private static final int MENU_WIDTH = 175;
+    private static final int MENU_HEIGHT = 600;
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 600;
+    private static final int JTABLE_HEADER_HEIGHT = 32;
+
     // There are a total of 5 JPanels:
     //      panels[0] = Menu
     //      panels[1] = Home
@@ -26,8 +38,8 @@ class TrackerGui {
     // which left column button is selected.
     private static final JPanel[] panels = new JPanel[6];
     // Array of labels for each potential field on a panel.
-    private static final String[] labels = {"_ID", "IMDB ID", "Title", "Year",
-            "Content Rating", "Genre", "Actors", "Rating", "Runtime\n (min)",
+    private static final String[] labels = {"ID", "IMDB ID", "Title", "Year",
+            "<html>Content<br>Rating<html>", "Genre", "Actors", "Rating", "<html>Runtime<br>(min)<html>",
             "Plot"};
 
     // Object for database. Initializes connection on creation.
@@ -54,7 +66,7 @@ class TrackerGui {
         mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setBackground(BACKGROUND);
-        mainFrame.setLocation(500, 250);
+        mainFrame.setLocation(POS_X, POS_Y);
         mainFrame.setResizable(false);
 
         // Retrieves content pane so objects may be added to it.
@@ -88,21 +100,22 @@ class TrackerGui {
      */
     private void buildMenuPanel() {
         // Set size size of menu panel.
-        panels[0].setPreferredSize(new Dimension(175,600));
+        panels[0].setPreferredSize(new Dimension(MENU_WIDTH,MENU_HEIGHT));
+        panels[0].setBackground(BACKGROUND);
 
         // Create and configure each button in the panel.
         JButton homeBut = new JButton("Home");
         homeBut.setBackground(BACKGROUND);
         homeBut.setForeground(FOREGROUND);
-        JButton searchBut = new JButton("Search Movies");
-        searchBut.setBackground(BACKGROUND);
-        searchBut.setForeground(FOREGROUND);
         JButton addBut =  new JButton("Add Movie");
         addBut.setBackground(BACKGROUND);
         addBut.setForeground(FOREGROUND);
-        JButton remBut = new JButton("Remove Movie");
-        remBut.setBackground(BACKGROUND);
-        remBut.setForeground(FOREGROUND);
+        JButton searchBut = new JButton("Search Movies");
+        searchBut.setBackground(BACKGROUND);
+        searchBut.setForeground(FOREGROUND);
+//        JButton remBut = new JButton("Remove Movie");
+//        remBut.setBackground(BACKGROUND);
+//        remBut.setForeground(FOREGROUND);
         JButton exitBut = new JButton("Exit");
         exitBut.setBackground(BACKGROUND);
         exitBut.setForeground(FOREGROUND);
@@ -111,7 +124,7 @@ class TrackerGui {
         panels[0].add(homeBut);
         panels[0].add(searchBut);
         panels[0].add(addBut);
-        panels[0].add(remBut);
+//        panels[0].add(remBut);
         panels[0].add(exitBut);
 
         // Add the menu panel to the left side of the main frame panel.
@@ -139,10 +152,10 @@ class TrackerGui {
             buildAddPanel();
         });
 
-        remBut.addActionListener(e -> {
-            readyPanelsForSwitching();
-            buildRemovePanel();
-        });
+//        remBut.addActionListener(e -> {
+//            readyPanelsForSwitching();
+//            buildRemovePanel();
+//        });
 
         exitBut.addActionListener(actionEvent -> System.exit(0));
     }
@@ -156,7 +169,7 @@ class TrackerGui {
         mainFrame.setTitle("Movie Tracker");
         // Creates the home panel and configurations.
         panels[1] = new JPanel();
-        panels[1].setPreferredSize(new Dimension(800,400));
+        panels[1].setPreferredSize(new Dimension(WIDTH, HEIGHT));
         panels[1].setBackground(BACKGROUND);
 
         // Makes a text area to display the instructions for the application
@@ -208,7 +221,7 @@ class TrackerGui {
         // Creates and configurs the search panel.
         panels[2] = new JPanel(new BorderLayout());
         panels[2].setBackground(BACKGROUND);
-        panels[2].setPreferredSize(new Dimension(800,400));
+        panels[2].setPreferredSize(new Dimension(WIDTH, HEIGHT));
         // Add label panel to the left on the search panel.
         panels[2].add(labelPanel, BorderLayout.WEST);
         // Add the fields to the right on the search panel.
@@ -228,8 +241,7 @@ class TrackerGui {
         // IMDB Id or the title and year (optional) of the movie. Displays a
         // single result utilizing all the fields on the search panel.
         dbSearchBut.addActionListener(doSearchThing -> {
-            MovieData[] movies = null;
-
+            MovieData[] movies;
             try {
                 movies = db.searchAll();
                 if(movies == null) {
@@ -239,7 +251,7 @@ class TrackerGui {
                             JOptionPane.INFORMATION_MESSAGE
                     );
                 } else {
-                    buildResultsPanel(movies);
+                    buildResultsPanel(movies, false);
                 }
             } catch(SQLException e) {
                optionPaneExceptionMessage(e);
@@ -254,6 +266,10 @@ class TrackerGui {
     // data about the movie and populates the fields with that data. The
     // Add Movie button adds the data in the text fields to the database.
     private void buildAddPanel() {
+//        String[] addLabels = Arrays.copyOfRange(labels, 1, 4);
+//        for(String l : addLabels) {
+//            System.out.println();
+//        }
         // Sets the title for adding the add panel.
         mainFrame.setTitle("Movie Tracker: Add Movie");
 
@@ -273,7 +289,7 @@ class TrackerGui {
         // Creates the add movie panel and configures it.
         panels[3] = new JPanel(new BorderLayout());
         panels[3].setBackground(BACKGROUND);
-        panels[3].setPreferredSize(new Dimension(800,400));
+        panels[3].setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         // Adds the label and field panels to the add movie panel.
         panels[3].add(labelPanel, BorderLayout.WEST);
@@ -343,18 +359,12 @@ class TrackerGui {
             }
         });
 
-        // TODO: Create separate window to display API results since there could
-        // TODO: be more than one result (instead of just taking the first
-        // TODO: result in the array of results.
         // Adds an action listener to the search web button. Uses the
         // API to gather information about the movie and  populates each
         // of the corresponding fields.
-        //
-        // Currently only takes the first movie in the array of movies
-        // returned by the API.
         webSearchBut.addActionListener(doSearchThing -> {
             // Array of MovieData objects to store all the results.
-            MovieData[] movies = null;
+            MovieData[] movies;
             // Gets the text from each of the corresponding fields.
             String imdbId = fields[1].getText();
             String title = fields[2].getText();
@@ -370,38 +380,27 @@ class TrackerGui {
                 try {
                     // Hit the API to gather movie data.
                     movies = imdbApi.getMovieData(imdbId, title, year);
-//                    consoleDisplayResults(movies);
-                    buildResultsPanel(movies);
+                    if(movies != null) {
+                        // Checks to see if the API found a movie.
+                        if(movies.length == 0 || movies[0].getTitle().isEmpty()) {
+                            optionPaneErrorMessage("A movie matching the id or" +
+                                            " title was not found!\n\nTry modifying" +
+                                            " the search! (maybe add a year)",
+                                            "Movie Not Found");
+                            clearFields(fields, plot);
+                        } else {
+                            consoleDisplayResults(movies);
+                            buildResultsPanel(movies, true);
+                        }
+                    }
                 } catch (IOException e) {
                     // If something weird happened. This should not ever be
                     // executed unless there is an issue with the API
                     // (Currently using www.theimdbapi.org).
                     optionPaneErrorMessage("Error: Something crazy and" +
-                                    " weird happened.\n\nCheck 'www.theimdbapi.org"
-                                    + " to ensure that its working still.",
-                            "Error: Unsuccessful Operation");
-                }
-
-                // Checks to see if the API found a movie.
-                if(movies != null) {
-                    title = movies[0].getTitle();
-                    if(title == null || title.isEmpty()) {
-                        optionPaneErrorMessage("A movie matching the id or" +
-                                        " title was not found!\n\nTry modifying" +
-                                        " the search! (maybe add a year)",
-                                "Movie Not Found");
-                        clearFields(fields, plot);
-                    } else {
-                        fields[1].setText(movies[0].getImdb_id());
-                        fields[2].setText(movies[0].getTitle());
-                        fields[3].setText(movies[0].getYear());
-                        fields[4].setText(movies[0].getContent_rating());
-                        fields[5].setText(movies[0].getGenre());
-                        fields[6].setText(movies[0].getStars());
-                        fields[7].setText(movies[0].getRating());
-                        fields[8].setText(movies[0].getLength());
-                        plot.setText(movies[0].getDescription());
-                    }
+                                    " weird happened.\n\nCheck 'www.theimdbapi.org" +
+                                    " to ensure that its working still.",
+                                    "Error: Unsuccessful Operation");
                 }
             }
         });
@@ -409,46 +408,110 @@ class TrackerGui {
         clearBut.addActionListener(e -> clearFields(fields, plot));
     }
 
-    private void buildRemovePanel() {
-        mainFrame.setTitle("Movie Tracker: Remove Movie");
+//    // TODO: Implement Database (assuming this panel is staying).
+//    private void buildRemovePanel() {
+//        mainFrame.setTitle("Movie Tracker: Remove Movie");
+//
+//        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
+//        labelPanel.setPreferredSize(new Dimension(123, 15));
+//        labelPanel.setBackground(BACKGROUND);
+//
+//        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
+//        fieldPanel.setBackground(BACKGROUND);
+//
+//        JTextField[] fields = new JTextField[4];
+//
+//        panels[4] = new JPanel(new BorderLayout());
+//        panels[4].setBackground(BACKGROUND);
+//        panels[4].setPreferredSize(new Dimension(WIDTH, HEIGHT));
+//        panels[4].add(labelPanel, BorderLayout.WEST);
+//        panels[4].add(fieldPanel, BorderLayout.CENTER);
+//        addPanelContent(labelPanel, fieldPanel, labels, fields, null);
+//
+//        JButton remBut = new JButton("REMOVE MOVIE");
+//        panels[4].add(remBut, BorderLayout.SOUTH);
+//
+//        mainContainer.add(panels[4], BorderLayout.EAST);
+//
+//        remBut.addActionListener(doRemoveThing ->
+//                optionPaneErrorMessage("Database Not Implemented Yet\n",
+//                        "Database Error")
+//        );
+//    }
 
-        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(123, 15));
-        labelPanel.setBackground(BACKGROUND);
-
-        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
-        fieldPanel.setBackground(BACKGROUND);
-
-        JTextField[] fields = new JTextField[4];
-
-        panels[4] = new JPanel(new BorderLayout());
-        panels[4].setBackground(BACKGROUND);
-        panels[4].setPreferredSize(new Dimension(800,400));
-        panels[4].add(labelPanel, BorderLayout.WEST);
-        panels[4].add(fieldPanel, BorderLayout.CENTER);
-        addPanelContent(labelPanel, fieldPanel, labels, fields, null);
-
-        JButton remBut = new JButton("REMOVE MOVIE");
-        panels[4].add(remBut, BorderLayout.SOUTH);
-
-        mainContainer.add(panels[4], BorderLayout.EAST);
-
-        remBut.addActionListener(doRemoveThing ->
-                optionPaneErrorMessage("Database Not Implemented Yet\n",
-                        "Database Error")
-        );
-    }
-
-    private void buildResultsPanel(MovieData[] movies) {
-        JTable table = new JTable(new MovieTable(movies, labels));
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        table.setFillsViewportHeight(true);
+    private void buildResultsPanel(MovieData[] movies, boolean isAdd) {
+        JTable table = new JTable(new MovieTable(movies, labels, isAdd));
         table.setBackground(BACKGROUND);
         table.setForeground(FOREGROUND);
+        table.setFillsViewportHeight(true);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.setAutoCreateColumnsFromModel(false);
+        TableColumn column;
+        for(int i = 0; i < table.getColumnCount(); ++i) {
+            column = table.getColumnModel().getColumn(i);
+            int adjIndex = isAdd ? i + 1 : i;
+            switch(adjIndex) {
+                case 0:
+                    // Id
+                    column.setPreferredWidth(30);
+                    break;
+                case 1:
+                    // IMDB Id
+                    column.setPreferredWidth(80);
+                    break;
+                case 2:
+                    // Title
+                    column.setPreferredWidth(140);
+                    break;
+                case 3:
+                    // Year
+                    column.setPreferredWidth(45);
+                    break;
+                case 4:
+                    // Content Rating
+                    column.setPreferredWidth(70);
+                    break;
+                case 5:
+                    // Genre
+                    column.setPreferredWidth(120);
+                    break;
+                case 6:
+                    // Actors
+                    column.setPreferredWidth(120);
+                    break;
+                case 7:
+                    // Rating
+                    column.setPreferredWidth(50);
+                    break;
+                case 8:
+                    // Runtime
+                    column.setPreferredWidth(65);
+                    break;
+                case 9:
+                    column.setPreferredWidth(300);
+                    break;
+                default:
+                    column.setPreferredWidth(0);
+            }
+        }
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        table.setDefaultRenderer(String.class, centerRenderer);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setColumnHeader(new JViewport() {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                d.height = JTABLE_HEADER_HEIGHT;
+                return d;
+            }
+        });
+
 
         panels[5] = new JPanel(new BorderLayout());
-        panels[5].setPreferredSize(new Dimension(800,400));
+        panels[5].setPreferredSize(new Dimension(WIDTH, HEIGHT));
         panels[5].add(scrollPane);
 
         readyPanelsForSwitching();

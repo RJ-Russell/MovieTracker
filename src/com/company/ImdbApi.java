@@ -51,7 +51,5 @@ class ImdbApi {
 
         return movieResponse;
     }
-
-
 }
 

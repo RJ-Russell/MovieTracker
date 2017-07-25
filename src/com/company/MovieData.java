@@ -60,12 +60,10 @@ class MovieData {
                 "Description: " + description + "\n";
     }
 
-    String[] toArray() {
-        if(_id == null || _id.isEmpty()) {
-            _id = "N/A";
-        }
-        return new String[]{_id, imdb_id, title, year, content_rating,
+    String[] toArray(boolean isAdd) {
+        String[] params = new String[] {_id, imdb_id, title, year, content_rating,
                             getGenre(), getStars(), rating, length, description};
+        return (isAdd) ? Arrays.copyOfRange(params, 1, params.length) : params;
     }
 
     String getImdb_id() {
