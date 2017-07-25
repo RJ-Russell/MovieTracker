@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -223,17 +224,27 @@ class TrackerGui {
         // Add the search panel to the left on the main container.
         mainContainer.add(panels[2], BorderLayout.EAST);
 
-        // TODO: Implement database
-        // TODO: Create separate window to display results since there could
-        // TODO: be more than one result (instead of just the one that will
-        // TODO: currently be displayed.
         // Action listener for the search panel. Search is done based on the
         // IMDB Id or the title and year (optional) of the movie. Displays a
         // single result utilizing all the fields on the search panel.
-        dbSearchBut.addActionListener(doSearchThing ->
-                optionPaneErrorMessage("Database Not Implemented Yet\n",
-                        "Database Error")
-        );
+        dbSearchBut.addActionListener(doSearchThing -> {
+            MovieData[] movies = null;
+
+            try {
+                movies = db.searchAll();
+                if(movies == null) {
+                    JOptionPane.showMessageDialog(
+                            mainContainer, "No Results Found",
+                            "Search Notification",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } else {
+                    buildResultsPanel(movies);
+                }
+            } catch(SQLException e) {
+               optionPaneExceptionMessage(e);
+            }
+        });
     }
 
     // Sets up the add panel (panels[3]). The add panel lists all the fields
@@ -293,7 +304,6 @@ class TrackerGui {
         // Sets the search web button as the default button.
         mainFrame.getRootPane().setDefaultButton(webSearchBut);
 
-        // TODO: Implement database
         // Adds an action listener to the add movie button. Inserts the
         // current movie listed in the fields to the database.
         addBut.addActionListener(doAddThing -> {
@@ -303,9 +313,9 @@ class TrackerGui {
                 if (fields[3].getText().matches("^(19|20)\\d{2}$")) {
                     // Attempt to insert into database.
                     try { db.insertMovie(fields[1].getText(), fields[2].getText(),
-                                fields[3].getText(), fields[4].getText(), fields[5].getText(),
-                                fields[6].getText(), fields[7].getText(), fields[8].getText(),
-                                plot.getText());
+                            fields[3].getText(), fields[4].getText(), fields[5].getText(),
+                            fields[6].getText(), fields[7].getText(), fields[8].getText(),
+                            plot.getText());
                         // Show success message if movie insert is successful.
                         JOptionPane.showMessageDialog(
                                 mainContainer, "Movie successfully inserted!",
@@ -313,23 +323,23 @@ class TrackerGui {
                                 JOptionPane.INFORMATION_MESSAGE
                         );
                         // Clear the fields on successful insertion.
-                        consoleDisplayResults(db.searchAll());
+//                        consoleDisplayResults(db.searchAll());
                         clearFields(fields, plot);
                     } catch (SQLException e) {
                         // If something bad happened, show error message.
-                        optionPaneExceptionMessage(mainContainer, e);
+                        optionPaneExceptionMessage(e);
                     }
                 } else {
                     // If invalid year format, display error message.
                     optionPaneErrorMessage("Please ensure that the year is a valid number!",
-                                           "Error: Year field is not a valid number");
+                            "Error: Year field is not a valid number");
 
                     clearFields(fields, plot);
                 }
             } else {
                 // If missing movie id (field[0]), display error message.
                 optionPaneErrorMessage("Movie is missing an IMDB ID!",
-                                       "Error: Unsuccessful Operation");
+                        "Error: Unsuccessful Operation");
             }
         });
 
@@ -353,8 +363,8 @@ class TrackerGui {
             // or a title before sending the data to the API.
             if(imdbId.isEmpty() && title.isEmpty()) {
                 optionPaneErrorMessage("Error: Please enter the IMDB Id or" +
-                                       " the title of the movie to be searched.",
-                                       "Error: Unsuccessful Operation");
+                                " the title of the movie to be searched.",
+                        "Error: Unsuccessful Operation");
             } else {
                 // If a valid id or title is supplied.
                 try {
@@ -367,9 +377,9 @@ class TrackerGui {
                     // executed unless there is an issue with the API
                     // (Currently using www.theimdbapi.org).
                     optionPaneErrorMessage("Error: Something crazy and" +
-                                           " weird happened.\n\nCheck 'www.theimdbapi.org"
-                                           + " to ensure that its working still.",
-                                           "Error: Unsuccessful Operation");
+                                    " weird happened.\n\nCheck 'www.theimdbapi.org"
+                                    + " to ensure that its working still.",
+                            "Error: Unsuccessful Operation");
                 }
 
                 // Checks to see if the API found a movie.
@@ -377,9 +387,9 @@ class TrackerGui {
                     title = movies[0].getTitle();
                     if(title == null || title.isEmpty()) {
                         optionPaneErrorMessage("A movie matching the id or" +
-                                               " title was not found!\n\nTry modifying" +
-                                               " the search! (maybe add a year)",
-                                               "Movie Not Found");
+                                        " title was not found!\n\nTry modifying" +
+                                        " the search! (maybe add a year)",
+                                "Movie Not Found");
                         clearFields(fields, plot);
                     } else {
                         fields[1].setText(movies[0].getImdb_id());
@@ -425,7 +435,7 @@ class TrackerGui {
 
         remBut.addActionListener(doRemoveThing ->
                 optionPaneErrorMessage("Database Not Implemented Yet\n",
-                                       "Database Error")
+                        "Database Error")
         );
     }
 
@@ -496,7 +506,7 @@ class TrackerGui {
         mainContainer.revalidate();
     }
 
-    private void optionPaneExceptionMessage(Container mainContainer, Exception error) {
+    private void optionPaneExceptionMessage(Exception error) {
         StringBuilder sb = new StringBuilder();
         sb.append(error.getMessage()).append("\n\n");
         for(StackTraceElement ste : error.getStackTrace()) {

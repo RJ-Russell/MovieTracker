@@ -1,8 +1,6 @@
 package com.company;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.util.Arrays;
 
 /**
  * Created on 7/24/17
@@ -17,9 +15,6 @@ public class MovieTable extends AbstractTableModel {
     MovieTable(MovieData[] movies, String[] labels) {
         this.labels = labels;
         this.movies = new String[movies.length][labels.length];
-
-        System.out.println("THIS.LABELS.LENGTH: " + this.labels.length);
-        System.out.println("THIS.MOVIES.LENGTH: " + this.movies.length);
 
         for(int i = 0; i < movies.length; ++i) {
             this.movies[i] = movies[i].toArray();
