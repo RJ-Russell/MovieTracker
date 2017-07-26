@@ -11,20 +11,13 @@ import java.util.Arrays;
  */
 public class MovieTable extends AbstractTableModel implements TableModel {
 
-    private String[][] movies;
-    private String[] labels = {"ID", "IMDB ID", "Title", "Year",
-            "<html>Content<br>Rating<html>", "Genre", "Actors", "Rating", "<html>Runtime<br>(min)<html>",
-            "Plot"};
+    private MovieData[] movies;
+    private String[] labels = {"IMDB ID", "Title", "Year",
+            "<html>Content<br>Rating<html>", "Genre", "Actors", "Rating",
+            "<html>Runtime<br>(min)<html>", "Plot"};
 
-    MovieTable(MovieData[] movies, boolean isAdd) {
-        if(isAdd) {
-            labels = Arrays.copyOfRange(labels, 1, labels.length);
-        }
-        this.movies = new String[movies.length][this.labels.length];
-
-        for(int i = 0; i < movies.length; ++i) {
-            this.movies[i] = movies[i].toArray(isAdd);
-        }
+    MovieTable(MovieData[] movies) {
+        this.movies = movies;
     }
 
     @Override
@@ -39,10 +32,38 @@ public class MovieTable extends AbstractTableModel implements TableModel {
 
     @Override
     public String getValueAt(int row, int col) {
-        if(movies[row][col] == null || movies[row][col].isEmpty()) {
-            return "N/A";
+        MovieData md = movies[row];
+        String retVal = "N/A";
+        switch(col) {
+            case 0:
+                retVal = md.getImdbId();
+                break;
+            case 1:
+                retVal = md.getTitle();
+                break;
+            case 2:
+                retVal = md.getYear();
+                break;
+            case 3:
+                retVal = md.getContentRating();
+                break;
+            case 4:
+                retVal = md.getGenre();
+                break;
+            case 5:
+                retVal = md.getStars();
+                break;
+            case 6:
+                retVal = md.getRating();
+                break;
+            case 7:
+                 retVal = md.getRuntime();
+                 break;
+            case 8:
+                retVal = md.getPlot();
+                break;
         }
-        return this.movies[row][col];
+        return retVal;
     }
 
     @Override
@@ -51,16 +72,43 @@ public class MovieTable extends AbstractTableModel implements TableModel {
     }
 
     @Override
-    public void setValueAt(Object val, int row, int col) {
-        String value = (String) val;
-        if(val == null || value.isEmpty()) {
-            movies[row][col] = "N/A";
-        } else {
-            movies[row][col] = value;
+    public void setValueAt(Object value, int row, int col) {
+        MovieData md = movies[row];
+        String val = (String) value;
+        switch(col) {
+            case 0:
+                md.setImdbId(val);
+                break;
+            case 1:
+                md.setTitle(val);
+                break;
+            case 2:
+                md.setYear(val);
+                break;
+            case 3:
+                md.setContentRating(val);
+                break;
+            case 4:
+                String[] genre = val.split(",");
+                md.setGenre(Arrays.stream(genre).map(String::trim).toArray(s -> genre));
+                break;
+            case 5:
+                String[] stars = val.split(",");
+                md.setStars(Arrays.stream(stars).map(String::trim).toArray(s -> stars));
+                break;
+            case 6:
+                md.setRating(val);
+                break;
+            case 7:
+                md.setRuntime(val);
+                break;
+            case 8:
+                md.setPlot(val);
+                break;
         }
     }
 
-    String[] getRowAt(int row) {
+    MovieData getRowAt(int row) {
         return movies[row];
     }
 

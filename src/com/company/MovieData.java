@@ -38,6 +38,11 @@ class MovieData {
                 length, description);
     }
 
+    MovieData(MovieData movie) {
+        copy(movie._id, movie.imdb_id, movie.title, movie.year, movie.content_rating,
+                movie.genre, movie.stars, movie.rating, movie.length, movie.description);
+    }
+
     MovieData(String[] params) {
         if(params.length == 9) {
             String[] genre = Arrays.stream(params[4].split(",")).map(String::trim).toArray(String[]::new);
@@ -53,8 +58,8 @@ class MovieData {
     }
 
     private void copy(String _id, String imdb_id, String title, String year,
-              String content_rating, String[] genre, String[] stars,
-              String rating, String length, String description) {
+                      String content_rating, String[] genre, String[] stars,
+                      String rating, String length, String description) {
         this._id = _id;
         this.imdb_id = imdb_id;
         this.title = title;
@@ -87,7 +92,48 @@ class MovieData {
         return (isAdd) ? Arrays.copyOfRange(params, 1, params.length) : params;
     }
 
-    String getImdb_id() {
+    // SETTERS
+    void setImdbId(String imdb_id) {
+        this.imdb_id = imdb_id;
+    }
+
+    void setTitle(String title) {
+        this.title = title;
+    }
+
+    void setYear(String year) {
+        this.year = year;
+    }
+
+    void setContentRating(String content_rating) {
+        this.content_rating = content_rating;
+    }
+
+    void setGenre(String[] genre) {
+        this.genre = genre;
+    }
+
+    void setStars(String[] stars) {
+        this.stars = stars;
+    }
+
+    void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    void setRuntime(String length) {
+        this.length = length;
+    }
+
+    void setPlot(String description) {
+        this.description = description;
+    }
+
+    String getId() {
+        return _id;
+    }
+
+    String getImdbId() {
         return imdb_id;
     }
 
@@ -99,7 +145,7 @@ class MovieData {
         return year;
     }
 
-    String getContent_rating() {
+    String getContentRating() {
         return content_rating;
     }
 
@@ -119,11 +165,11 @@ class MovieData {
         return rating;
     }
 
-    String getLength() {
+    String getRuntime() {
         return length;
     }
 
-    String getDescription() {
+    String getPlot() {
         return description;
     }
 }

@@ -373,7 +373,7 @@ class TrackerGui {
     // RESULTS PANEL
     // ====================================================
     private void buildResultsPanel(MovieData[] movies, boolean isAdd) {
-        JTable table = new JTable(new MovieTable(movies, isAdd));
+        JTable table = new JTable(new MovieTable(movies));
         table.setBackground(BACKGROUND);
         table.setForeground(FOREGROUND);
         table.setFillsViewportHeight(true);
@@ -382,53 +382,47 @@ class TrackerGui {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         TableColumn column;
-        for(int i = 0; i < table.getColumnCount(); ++i) {
-            column = table.getColumnModel().getColumn(i);
-            int adjIndex = isAdd ? i + 1 : i;
-            switch(adjIndex) {
+        for(int col = 0; col < table.getColumnCount(); ++col) {
+            column = table.getColumnModel().getColumn(col);
+            switch(col) {
                 case 0:
-                    // Id
-                    column.setPreferredWidth(30);
-                    column.setCellRenderer(centerRenderer);
-                    break;
-                case 1:
                     // IMDB Id
                     column.setPreferredWidth(80);
                     column.setCellRenderer(centerRenderer);
                     break;
-                case 2:
+                case 1:
                     // Title
                     column.setPreferredWidth(140);
                     break;
-                case 3:
+                case 2:
                     // Year
                     column.setPreferredWidth(45);
                     column.setCellRenderer(centerRenderer);
                     break;
-                case 4:
+                case 3:
                     // Content Rating
                     column.setPreferredWidth(70);
                     column.setCellRenderer(centerRenderer);
                     break;
-                case 5:
+                case 4:
                     // Genre
                     column.setPreferredWidth(120);
                     break;
-                case 6:
+                case 5:
                     // Actors
                     column.setPreferredWidth(120);
                     break;
-                case 7:
+                case 6:
                     // Rating
                     column.setPreferredWidth(50);
                     column.setCellRenderer(centerRenderer);
                     break;
-                case 8:
+                case 7:
                     // Runtime
                     column.setPreferredWidth(65);
                     column.setCellRenderer(centerRenderer);
                     break;
-                case 9:
+                case 8:
                     // Plot
                     column.setPreferredWidth(300);
                     break;
@@ -465,17 +459,12 @@ class TrackerGui {
                     optionPaneErrorMessage("Please select a row!", "No row selected");
                 } else {
                     MovieTable mt = (MovieTable) table.getModel();
-                    String[] rowData = mt.getRowAt(table.getSelectedRow());
-
-                    StringBuilder sb = new StringBuilder();
-                    for(String s : rowData) {
-                        sb.append(s).append("\n");
-                    }
+                    MovieData rowData = mt.getRowAt(table.getSelectedRow());
 
                     // TODO: Figure out a better way of doing this later.
                     JTextArea movieInfo = new JTextArea();
-                    movieInfo.setText(sb.toString());
-                    movieInfo.setRows(sb.toString().split("\n").length);
+                    movieInfo.setText(rowData.toString());
+                    movieInfo.setRows(rowData.toString().split("\n").length);
                     movieInfo.setColumns(25);
                     movieInfo.setEditable(false);
                     JScrollPane infoScroll = new JScrollPane(movieInfo);
@@ -521,7 +510,8 @@ class TrackerGui {
 
             remBut.addActionListener(removeEvent -> {
                 int row = table.getSelectedRow();
-                String movieId = (String) table.getModel().getValueAt(row, 0);
+                MovieTable mt = (MovieTable) table.getModel();
+                String movieId = mt.getRowAt(row).getId();
 
                 int confirm = JOptionPane.showConfirmDialog(
                         null,

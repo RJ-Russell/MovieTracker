@@ -97,15 +97,15 @@ class MovieDB {
                 "`runtime`,`plot`) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         pstmt = conn.prepareStatement(insertStmt);
-        pstmt.setString(1, movie.getImdb_id());
+        pstmt.setString(1, movie.getImdbId());
         pstmt.setString(2, movie.getTitle());
         pstmt.setString(3, movie.getYear());
-        pstmt.setString(4, movie.getContent_rating());
+        pstmt.setString(4, movie.getContentRating());
         pstmt.setString(5, movie.getGenre());
         pstmt.setString(6, movie.getStars());
         pstmt.setString(7, movie.getRating());
-        pstmt.setString(8, movie.getLength());
-        pstmt.setString(9, movie.getDescription());
+        pstmt.setString(8, movie.getRuntime());
+        pstmt.setString(9, movie.getPlot());
 
         pstmt.executeUpdate();
         pstmt.close();
