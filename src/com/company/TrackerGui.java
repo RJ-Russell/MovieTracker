@@ -441,22 +441,8 @@ class TrackerGui {
                     MovieTable mt = (MovieTable) table.getModel();
                     MovieData rowData = mt.getRowAt(table.getSelectedRow());
 
-                    // TODO: Figure out a better way of doing this later?
-                    JTextArea movieInfo = new JTextArea();
-                    movieInfo.setText(rowData.toString());
-                    movieInfo.setRows(rowData.toString().split("\n").length);
-                    movieInfo.setColumns(25);
-                    movieInfo.setEditable(false);
-                    JScrollPane infoScroll = new JScrollPane(movieInfo);
-
                     try {
-                        int confirm = JOptionPane.showConfirmDialog(
-                                null,
-                                infoScroll,
-                                "Add this movie?",
-                                JOptionPane.YES_NO_OPTION
-                        );
-                        if(confirm == 0) {
+                        if(confirmDialogYesNo(rowData, "Add this movie?") == 0) {
                             db.insertMovie(new MovieData(rowData));
                             JOptionPane.showMessageDialog(
                                     mainContainer, "Movie successfully inserted!",
@@ -489,20 +475,13 @@ class TrackerGui {
             panels[4].add(remBut, BorderLayout.SOUTH);
 
             remBut.addActionListener(removeEvent -> {
-                int row = table.getSelectedRow();
                 MovieTable mt = (MovieTable) table.getModel();
-                String movieId = mt.getRowAt(row).getId();
+                MovieData rowData = mt.getRowAt(table.getSelectedRow());
 
-                int confirm = JOptionPane.showConfirmDialog(
-                        null,
-                        "Remove this movie? Are you sure?",
-                        "Remove Selected Movie",
-                        JOptionPane.YES_NO_OPTION
-                );
-
-                if(confirm == 0) {
+                // TODO: Figure out a better way of doing this later?
+                if(confirmDialogYesNo(rowData, "Remove this movie? Are you sure??") == 0) {
                     try {
-                        db.removeMovie(movieId);
+                        db.removeMovie(rowData.getId());
                         MovieData[] reloadMovies = db.searchAll();
                         readyPanelsForSwitching();
                         buildResultsPanel(reloadMovies, false);
@@ -588,6 +567,22 @@ class TrackerGui {
         }
         mainContainer.repaint();
         mainContainer.revalidate();
+    }
+
+    private int confirmDialogYesNo(MovieData rowData, String dialog) {
+        JTextArea movieInfo = new JTextArea();
+        movieInfo.setText(rowData.toString());
+        movieInfo.setRows(rowData.toString().split("\n").length);
+        movieInfo.setColumns(50);
+        movieInfo.setEditable(false);
+        JScrollPane infoScroll = new JScrollPane(movieInfo);
+
+        return JOptionPane.showConfirmDialog(
+                null,
+                infoScroll,
+                dialog,
+                JOptionPane.YES_NO_OPTION
+        );
     }
 
     private void optionPaneExceptionMessage(Exception error) {
