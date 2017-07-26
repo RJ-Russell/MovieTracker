@@ -1,16 +1,11 @@
 package com.company;
 
-import jdk.nashorn.internal.scripts.JO;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 /**
  * @author RJ Russell
@@ -202,23 +197,18 @@ class TrackerGui {
     // Add Movie button adds the data in the text fields to the database.
     private void buildAddPanel() {
         final String[] labels = {"IMDB ID", "Title", "Year"};
-//        String[] addLabels = Arrays.copyOfRange(labels, 1, 4);
-//        for(String l : addLabels) {
-//            System.out.println();
-//        }
+
         // Sets the title for adding the add panel.
         mainFrame.setTitle("Movie Tracker: Add Movie");
 
         // Creates a panel to put the labels on and configures it.
-        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setBackground(BACKGROUND);
+        JPanel addPanel = new JPanel(new GridBagLayout());
+        addPanel.setBackground(BACKGROUND);
 
-        // Creates a pnael to put the fields on and configures it.
-        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
-        fieldPanel.setBackground(BACKGROUND);
         JTextField[] fields = new JTextField[labels.length];
+
         // Adds the labels and fields to the label and field panels.
-        addPanelContent(labelPanel, fieldPanel, labels, fields);
+        addPanelContent(addPanel, labels, fields, true);
 
         // Creates the add movie panel and configures it.
         panels[2] = new JPanel(new BorderLayout());
@@ -226,8 +216,8 @@ class TrackerGui {
         panels[2].setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         // Adds the label and field panels to the add movie panel.
-        panels[2].add(labelPanel, BorderLayout.WEST);
-        panels[2].add(fieldPanel, BorderLayout.CENTER);
+        panels[2].add(addPanel, BorderLayout.WEST);
+//        panels[2].add(fieldPanel, BorderLayout.CENTER);
 
         // Creates the add, search web and clear fields buttons.
         JButton webSearchBut = new JButton("Search Web");
@@ -305,39 +295,27 @@ class TrackerGui {
     // an optional year parameter.
     private void searchPanelShow() {
         // Array of labels for each potential field on a panel.
-        final String[] labels = {"ID", "IMDB ID", "Title", "Year",
-                "<html>Content<br>Rating<html>", "Genre", "Actors", "Rating"};
+        final String[] labels = {"IMDB ID", "Title", "Year",
+                "Content Rating", "Genre", "Actors", "Rating"};
         // Sets the title of the main frame for the search panel.
         mainFrame.setTitle("Movie Tracker: Search Movies");
 
         // Creates and configures the panel for the labels on the search panel.
-        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-        labelPanel.setPreferredSize(new Dimension(123, 15));
-        labelPanel.setBackground(BACKGROUND);
-        // Creates and configures the panel for the fields on the search panel
-        // and gives the field panel a grid layout. The number of rows equals
-        // the number of labels created and with one column. Although the panel
-        // does not show all of the rows, the labels.length value is used to
-        // keep consistent spacing between the panels.
-        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
-        fieldPanel.setBackground(BACKGROUND);
+        // Creates a panel to put the labels on and configures it.
+        JPanel addPanel = new JPanel(new GridBagLayout());
+        addPanel.setBackground(BACKGROUND);
 
-        // Sets the number of fields to be included on the search panel.
-        // The number of fields is equal to the number of labels so that
-        // if the movie exists in the database, the information for the
-        // movie can be displayed properly.
         JTextField[] fields = new JTextField[labels.length];
+
+        // Adds the labels and fields to the label and field panels.
+        addPanelContent(addPanel, labels, fields, false);
 
         // Creates and configurs the search panel.
         panels[3] = new JPanel(new BorderLayout());
         panels[3].setBackground(BACKGROUND);
         panels[3].setPreferredSize(new Dimension(WIDTH, HEIGHT));
         // Add label panel to the left on the search panel.
-        panels[3].add(labelPanel, BorderLayout.WEST);
-        // Add the fields to the right on the search panel.
-        panels[3].add(fieldPanel, BorderLayout.CENTER);
-        // Adds the content to the label and field panels.
-        addPanelContent(labelPanel, fieldPanel, labels, fields);
+        panels[3].add(addPanel, BorderLayout.WEST);
 
         // Create search button.
         JButton dbSearchBut = new JButton("Search Movie Collection");
@@ -346,6 +324,7 @@ class TrackerGui {
         panels[3].add(dbSearchBut, BorderLayout.SOUTH);
         // Add the search panel to the left on the main container.
         mainContainer.add(panels[3], BorderLayout.EAST);
+        mainFrame.getRootPane().setDefaultButton(dbSearchBut);
 
         // Action listener for the search panel. Search is done based on the
         // IMDB Id or the title and year (optional) of the movie. Displays a
@@ -376,6 +355,7 @@ class TrackerGui {
         JTable table = new JTable(new MovieTable(movies));
         table.setBackground(BACKGROUND);
         table.setForeground(FOREGROUND);
+        table.setFont(new Font("Source Code Pro", Font.PLAIN, 14));
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -461,7 +441,7 @@ class TrackerGui {
                     MovieTable mt = (MovieTable) table.getModel();
                     MovieData rowData = mt.getRowAt(table.getSelectedRow());
 
-                    // TODO: Figure out a better way of doing this later.
+                    // TODO: Figure out a better way of doing this later?
                     JTextArea movieInfo = new JTextArea();
                     movieInfo.setText(rowData.toString());
                     movieInfo.setRows(rowData.toString().split("\n").length);
@@ -573,24 +553,30 @@ class TrackerGui {
 
 
 
-    private void addPanelContent(JPanel labelPanel,
-                                 JPanel fieldPanel,
-                                 String[] labels,
-                                 JTextField[] fields) {
-        for(int i = 0; i < fields.length; ++i) {
-                fields[i] = new JTextField();
-                fields[i].setToolTipText(labels[i]);
-                fields[i].setColumns(50);
+    private void addPanelContent(JPanel addPanel, String[] labels,
+                                 JTextField[] fields, boolean isAdd) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = (isAdd) ? new Insets(0,0,60,5) : new Insets(0, 0, 50, 5);
+        for(int i = 0; i < labels.length; ++i) {
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            gbc.ipadx = (isAdd) ? 80 : 70;
 
-                JLabel label = new JLabel(labels[i] + ": ", JLabel.RIGHT);
-                label.setForeground(FOREGROUND);
-                label.setLabelFor(fields[i]);
+            JLabel label = new JLabel(labels[i] + ": ", JLabel.RIGHT);
+            label.setForeground(FOREGROUND);
+            label.setLabelFor(fields[i]);
+            label.setFont(new Font("DejaVu Sans", Font.PLAIN, 12));
+            gbc.anchor = (gbc.gridx == 0) ? GridBagConstraints.EAST : GridBagConstraints.WEST;
+            gbc.fill = (gbc.gridx == 0) ? GridBagConstraints.BOTH : GridBagConstraints.HORIZONTAL;
 
-                labelPanel.add(label);
-                JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 30));
-                p.setBackground(BACKGROUND);
-                p.add(fields[i]);
-                fieldPanel.add(p);
+            fields[i] = new JTextField();
+            fields[i].setToolTipText(labels[i]);
+            fields[i].setColumns(50);
+            fields[i].setFont(new Font("DejaVu Sans", Font.PLAIN, 12));
+
+            addPanel.add(label, gbc);
+            ++gbc.gridx;
+            addPanel.add(fields[i], gbc);
         }
     }
 
@@ -633,15 +619,13 @@ class TrackerGui {
         }
     }
 
-
-    private void consoleDisplayResults(MovieData[] md) {
-        if(md == null) {
-            System.out.println("No movies in database!");
-        } else {
-            for (MovieData d : md) {
-                System.out.println(d);
-            }
-        }
-    }
-
+//    private void consoleDisplayResults(MovieData[] md) {
+//        if(md == null) {
+//            System.out.println("No movies in database!");
+//        } else {
+//            for (MovieData d : md) {
+//                System.out.println(d);
+//            }
+//        }
+//    }
 }

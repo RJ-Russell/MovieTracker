@@ -18,18 +18,6 @@ class MovieData {
     private String rating;
     private String length;
     private String description;
-//    private String release_date;
-//    private String original_title;
-//    private String[] writers;
-//    private String director;
-//    private String rating_count;
-
-// Additional fields in the JSON that are not wanted in the returned value.
-//    private List<CastData> cast;
-//    private URLData url;
-//    private PosterData poster;
-//    private List<TrailerData> trailer;
-//    MovieData() {}
 
     MovieData(String _id, String imdb_id, String title, String year,
               String content_rating, String[] genre, String[] stars,
@@ -41,20 +29,6 @@ class MovieData {
     MovieData(MovieData movie) {
         copy(movie._id, movie.imdb_id, movie.title, movie.year, movie.content_rating,
                 movie.genre, movie.stars, movie.rating, movie.length, movie.description);
-    }
-
-    MovieData(String[] params) {
-        if(params.length == 9) {
-            String[] genre = Arrays.stream(params[4].split(",")).map(String::trim).toArray(String[]::new);
-            String[] stars = Arrays.stream(params[5].split(",")).map(String::trim).toArray(String[]::new);
-            copy(null, params[0], params[1], params[2], params[3], genre, stars,
-                    params[6], params[7], params[8]);
-        } else {
-            String[] genre = Arrays.stream(params[5].split(",")).map(String::trim).toArray(String[]::new);
-            String[] stars = Arrays.stream(params[6].split(",")).map(String::trim).toArray(String[]::new);
-            copy(params[0], params[1], params[2], params[3], params[4], genre,
-                    stars, params[7], params[8], params[9]);
-        }
     }
 
     private void copy(String _id, String imdb_id, String title, String year,
@@ -74,22 +48,15 @@ class MovieData {
 
     @Override
     public String toString() {
-        return  "ID: " + _id + "\n" +
-                "IMDB Id: " + imdb_id + "\n" +
+        return  "IMDB Id: " + imdb_id + "\n" +
                 "Title: " + title + "\n" +
                 "Year: " + year + "\n" +
                 "Content Rating: " + content_rating + "\n" +
                 "Genre: " + getGenre() + "\n" +
                 "Stars: " + getStars() + "\n" +
                 "Rating: " + rating + "\n" +
-                "Movie Length: " + length + "\n" +
+                "Movie Length (min): " + length + "\n" +
                 "Description: " + description + "\n";
-    }
-
-    String[] toArray(boolean isAdd) {
-        String[] params = new String[] {_id, imdb_id, title, year, content_rating,
-                            getGenre(), getStars(), rating, length, description};
-        return (isAdd) ? Arrays.copyOfRange(params, 1, params.length) : params;
     }
 
     // SETTERS
@@ -129,6 +96,7 @@ class MovieData {
         this.description = description;
     }
 
+    // GETTERS
     String getId() {
         return _id;
     }
@@ -173,6 +141,19 @@ class MovieData {
         return description;
     }
 }
+
+// Additional fields in the JSON that are not wanted in the returned value.
+//    private String release_date;
+//    private String original_title;
+//    private String[] writers;
+//    private String director;
+//    private String rating_count;
+
+//    private List<CastData> cast;
+//    private URLData url;
+//    private PosterData poster;
+//    private List<TrailerData> trailer;
+//    MovieData() {}
 
 // Additional classes that are included in the JSON and not wanted in return value.
 //class URLData {

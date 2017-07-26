@@ -33,7 +33,7 @@ public class MovieTable extends AbstractTableModel implements TableModel {
     @Override
     public String getValueAt(int row, int col) {
         MovieData md = movies[row];
-        String retVal = "N/A";
+        String retVal = null;
         switch(col) {
             case 0:
                 retVal = md.getImdbId();
@@ -63,7 +63,7 @@ public class MovieTable extends AbstractTableModel implements TableModel {
                 retVal = md.getPlot();
                 break;
         }
-        return retVal;
+        return (retVal == null || retVal.isEmpty()) ? "N/A" : retVal;
     }
 
     @Override
