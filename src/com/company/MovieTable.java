@@ -12,26 +12,19 @@ import java.util.Arrays;
 public class MovieTable extends AbstractTableModel implements TableModel {
 
     private String[][] movies;
-    private String[] labels;
+    private String[] labels = {"ID", "IMDB ID", "Title", "Year",
+            "<html>Content<br>Rating<html>", "Genre", "Actors", "Rating", "<html>Runtime<br>(min)<html>",
+            "Plot"};
 
-    MovieTable(MovieData[] movies, String[] labels, boolean isAdd) {
+    MovieTable(MovieData[] movies, boolean isAdd) {
         if(isAdd) {
-            this.labels = Arrays.copyOfRange(labels, 1, labels.length);
-        } else {
-            this.labels = labels;
+            labels = Arrays.copyOfRange(labels, 1, labels.length);
         }
         this.movies = new String[movies.length][this.labels.length];
 
         for(int i = 0; i < movies.length; ++i) {
             this.movies[i] = movies[i].toArray(isAdd);
         }
-
-//        for (String[] m : this.movies) {
-//            System.out.println();
-//            for (int j = 0; j < this.movies[0].length; ++j) {
-//                System.out.println(m[j]);
-//            }
-//        }
     }
 
     @Override
@@ -67,7 +60,7 @@ public class MovieTable extends AbstractTableModel implements TableModel {
         }
     }
 
-    public String[] getRowAt(int row) {
+    String[] getRowAt(int row) {
         return movies[row];
     }
 
