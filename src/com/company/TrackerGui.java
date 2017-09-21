@@ -318,7 +318,7 @@ class TrackerGui {
     // an optional year parameter.
     private void searchPanelShow() {
         // Array of labels for each potential field on a panel.
-        final String[] labels = {"IMDB ID", "Title", "Year",
+        final String[] labels = {"Title", "Year",
                 "Content Rating", "Genre", "Actors", "Rating"};
         // Sets the title of the main frame for the search panel.
         mainFrame.setTitle("Movie Tracker: Search Movies");
@@ -375,12 +375,15 @@ class TrackerGui {
     // RESULTS PANEL
     // ====================================================
     private void buildResultsPanel(MovieData[] movies, boolean isAdd) {
-        JTable table = new JTable(new MovieTable(movies));
+        JTable table = new JTable(new Results(movies));
+        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+
         table.setBackground(BACKGROUND);
         table.setForeground(FOREGROUND);
         table.setFont(new Font("Source Code Pro", Font.PLAIN, 14));
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.getTableHeader().setReorderingAllowed(false);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -445,7 +448,6 @@ class TrackerGui {
             }
         });
 
-
         panels[4] = new JPanel(new BorderLayout());
         panels[4].setBackground(BACKGROUND);
         panels[4].setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -461,7 +463,7 @@ class TrackerGui {
                 if(row < 0) {
                     optionPaneErrorMessage("Please select a row!", "No row selected");
                 } else {
-                    MovieTable mt = (MovieTable) table.getModel();
+                    Results mt = (Results) table.getModel();
                     MovieData rowData = mt.getRowAt(table.getSelectedRow());
 
                     try {
@@ -497,8 +499,22 @@ class TrackerGui {
             panels[4].add(scrollPane, BorderLayout.NORTH);
             panels[4].add(remBut, BorderLayout.SOUTH);
 
+            // Update cell action.
+            table.getModel().addTableModelListener(tableModelEvent -> {
+                Results mt = (Results) table.getModel();
+                MovieData rowData = mt.getRowAt(tableModelEvent.getFirstRow());
+                if(confirmDialogYesNo(rowData, "Update this movie? Is the data correct??") == 0) {
+                    try {
+                        db.update(rowData);
+                    } catch (SQLException e) {
+                        optionPaneExceptionMessage(e);
+                    }
+                }
+            });
+
+            // Remove button actions.
             remBut.addActionListener(removeEvent -> {
-                MovieTable mt = (MovieTable) table.getModel();
+                Results mt = (Results) table.getModel();
                 MovieData rowData = mt.getRowAt(table.getSelectedRow());
 
                 // TODO: Figure out a better way of doing this later?
@@ -512,48 +528,12 @@ class TrackerGui {
                         optionPaneExceptionMessage(e);
                     }
                 }
-
-
             });
         }
 
         readyPanelsForSwitching();
         mainContainer.add(panels[4], BorderLayout.EAST);
     }
-
-
-//    // TODO: Implement Database (assuming this panel is staying).
-//    private void buildRemovePanel() {
-//        mainFrame.setTitle("Movie Tracker: Remove Movie");
-//
-//        JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
-//        labelPanel.setPreferredSize(new Dimension(123, 15));
-//        labelPanel.setBackground(BACKGROUND);
-//
-//        JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
-//        fieldPanel.setBackground(BACKGROUND);
-//
-//        JTextField[] fields = new JTextField[4];
-//
-//        panels[4] = new JPanel(new BorderLayout());
-//        panels[4].setBackground(BACKGROUND);
-//        panels[4].setPreferredSize(new Dimension(WIDTH, HEIGHT));
-//        panels[4].add(labelPanel, BorderLayout.WEST);
-//        panels[4].add(fieldPanel, BorderLayout.CENTER);
-//        addPanelContent(labelPanel, fieldPanel, labels, fields, null);
-//
-//        JButton remBut = new JButton("REMOVE MOVIE");
-//        panels[4].add(remBut, BorderLayout.SOUTH);
-//
-//        mainContainer.add(panels[4], BorderLayout.EAST);
-//
-//        remBut.addActionListener(doRemoveThing ->
-//                optionPaneErrorMessage("Database Not Implemented Yet\n",
-//                        "Database Error")
-//        );
-//    }
-
-
 
     private void addPanelContent(JPanel addPanel, String[] labels,
                                  JTextField[] fields, boolean isAdd) {
@@ -636,14 +616,4 @@ class TrackerGui {
             fields[i].setText("");
         }
     }
-
-//    private void consoleDisplayResults(MovieData[] md) {
-//        if(md == null) {
-//            System.out.println("No movies in database!");
-//        } else {
-//            for (MovieData d : md) {
-//                System.out.println(d);
-//            }
-//        }
-//    }
 }

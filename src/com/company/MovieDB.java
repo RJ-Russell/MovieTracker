@@ -74,45 +74,14 @@ class MovieDB {
                 DB_USERNAME,DB_PASSWORD);
         stmt = conn.createStatement();
         stmt.execute(CREATE_TABLE);
-        System.out.println("Table created successfully\n\n");
+        System.out.println("DB Success\n\n");
     }
 
     /**
      * Inserts the data for a single movie into the database.
-     * @param imdbId: The id that IMDB assigns the movie.
-     * @param title: Title of the movie.
-     * @param year: Year movie was released.
-     * @param contentRating: Content rating for the movie (e.g. PG-13, R).
-     * @param genre: Movie genre(s).
-     * @param actors: Top billed actors for the movie.
-     * @param rating: Rating given to movie by IMDB.
-     * @param runtime: Total runtime in minutes.
-     * @param plot: Short plot description for the movie.
+     * @param movie: A MovieData object that has all the data for one entry.
      * @throws SQLException
      */
-    void insertMovie(String imdbId, String title, String year,
-                     String contentRating, String genre, String actors,
-                     String rating, String runtime, String plot) throws SQLException {
-
-        final String insertStmt = "INSERT INTO `movies`(`_id`,`imdb_id`," +
-                "`title`,`year`,`content_rating`,`genres`,`actors`,`rating`," +
-                "`runtime`,`plot`) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        pstmt = conn.prepareStatement(insertStmt);
-        pstmt.setString(1, imdbId);
-        pstmt.setString(2, title);
-        pstmt.setString(3, year);
-        pstmt.setString(4, contentRating);
-        pstmt.setString(5, genre);
-        pstmt.setString(6, actors);
-        pstmt.setString(7, rating);
-        pstmt.setString(8, runtime);
-        pstmt.setString(9, plot);
-
-        pstmt.executeUpdate();
-        pstmt.close();
-    }
-
     void insertMovie(MovieData movie) throws SQLException {
         final String insertStmt = "INSERT INTO `movies`(`_id`,`imdb_id`," +
                 "`title`,`year`,`content_rating`,`genres`,`actors`,`rating`," +
@@ -139,15 +108,18 @@ class MovieDB {
      * @throws SQLException
      */
     void removeMovie(String id) throws SQLException {
-        String removeStmt = "DELETE FROM `movies` WHERE _ID = ?;";
-        pstmt = conn.prepareStatement(removeStmt);
+        pstmt = conn.prepareStatement("DELETE FROM `movies` WHERE _ID = ?;");
         pstmt.setString(1, id);
         pstmt.executeUpdate();
         pstmt.close();
     }
 
+    MovieData[] search(String title, String year, String cr, String genre, String actors, String rating) throws SQLException {
+        throw new UnsupportedOperationException("No implemented yet");
+    }
+
     MovieData[] searchAll() throws SQLException {
-        String query = "SELECT * FROM movies;";
+        String query = "SELECT * FROM movies ORDER BY `title`;";
         return searchQuery(query);
     }
 
@@ -169,7 +141,7 @@ class MovieDB {
             return null;
         }
         // TODO: This is for debugging. Remove later.
-        System.out.println("ROWS: " + rows);
+        // System.out.println("ROWS: " + rows);
 
         MovieData[] movieResults = new MovieData[rows];
 
@@ -198,6 +170,27 @@ class MovieDB {
             ++i;
         }
         return movieResults;
+    }
+
+    void update(MovieData movie) throws SQLException {
+        final String stmt = "UPDATE movies SET `imdb_id`= ?, `title` = ?, `year` = ?," +
+                "`content_rating` = ?, `genres` = ?, `actors` = ?, `rating` = ?, " +
+                "`runtime` = ?, `plot` = ? WHERE `_ID` = ?";
+
+        PreparedStatement pstmt = conn.prepareStatement(stmt);
+        pstmt.setString(1, movie.getImdbId());
+        pstmt.setString(2, movie.getTitle());
+        pstmt.setString(3, movie.getYear());
+        pstmt.setString(4, movie.getContentRating());
+        pstmt.setString(5, movie.getGenre());
+        pstmt.setString(6, movie.getStars());
+        pstmt.setString(7, movie.getRating());
+        pstmt.setString(8, movie.getRuntime());
+        pstmt.setString(9, movie.getPlot());
+        pstmt.setString(10, movie.getId());
+
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 
 }

@@ -23,7 +23,6 @@
 package com.company;
 
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import java.util.Arrays;
 
 /**
@@ -31,14 +30,14 @@ import java.util.Arrays;
  *
  * @author RJ Russell
  */
-public class MovieTable extends AbstractTableModel implements TableModel {
+public class Results extends AbstractTableModel {
 
     private MovieData[] movies;
     private String[] labels = {"IMDB ID", "Title", "Year",
             "<html>Content<br>Rating<html>", "Genre", "Actors", "Rating",
             "<html>Runtime<br>(min)<html>", "Plot"};
 
-    MovieTable(MovieData[] movies) {
+    Results(MovieData[] movies) {
         this.movies = movies;
     }
 
@@ -128,6 +127,7 @@ public class MovieTable extends AbstractTableModel implements TableModel {
                 md.setPlot(val);
                 break;
         }
+        fireTableRowsUpdated(row, col);
     }
 
     MovieData getRowAt(int row) {

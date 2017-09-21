@@ -77,7 +77,8 @@ class MovieData {
                 "Stars: " + getStars() + "\n" +
                 "Rating: " + rating + "\n" +
                 "Movie Length (min): " + length + "\n" +
-                "Description: " + description + "\n";
+                "Description: " + description + "\n" +
+                "_ID: " + _id + "\n";
     }
 
     // SETTERS
