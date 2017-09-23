@@ -355,7 +355,8 @@ class TrackerGui {
         dbSearchBut.addActionListener(doSearchThing -> {
             MovieData[] movies;
             try {
-                movies = db.searchAll();
+                movies = db.search(fields[0].getText(), fields[1].getText(), fields[2].getText(), fields[3].getText(),
+                                    fields[4].getText(), fields[5].getText());
                 if(movies == null) {
                     JOptionPane.showMessageDialog(
                             mainContainer, "No Results Found",

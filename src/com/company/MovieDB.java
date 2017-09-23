@@ -114,13 +114,56 @@ class MovieDB {
         pstmt.close();
     }
 
-    MovieData[] search(String title, String year, String cr, String genre, String actors, String rating) throws SQLException {
-        throw new UnsupportedOperationException("No implemented yet");
+    MovieData[] searchAll() throws SQLException {
+        return searchQuery("SELECT * FROM `movies`");
     }
 
-    MovieData[] searchAll() throws SQLException {
-        String query = "SELECT * FROM movies ORDER BY `title`;";
-        return searchQuery(query);
+
+    MovieData[] search(String title, String year, String cr, String genre, String actors, String rating) throws SQLException {
+        boolean first = true;
+
+        String query = "SELECT * FROM `movies`";
+        if(title.isEmpty() && year.isEmpty() && cr.isEmpty() && genre.isEmpty() && actors.isEmpty() && rating.isEmpty()) {
+            return searchQuery(query + ";");
+        } else {
+            query += " WHERE ";
+            if(!title.isEmpty()) {
+                query += "`title` = '" + title + "'";
+                first = false;
+            }
+
+            if(!year.isEmpty()) {
+                if(!first) { query += " AND "; }
+                query += " `year` = '" + year + "'";
+                first = false;
+            }
+
+            if(!cr.isEmpty()) {
+                if(!first) { query += " AND "; }
+                query += " `content_rating` = '" + cr + "'";
+                first = false;
+            }
+
+            if(!genre.isEmpty()) {
+                if(!first) { query += " AND "; }
+                query += " `genres` LIKE '%" + genre + "%'";
+                first = false;
+            }
+
+            if(!actors.isEmpty()) {
+                if(!first) { query += " AND "; }
+                query += " `actors` LIKE '%" + actors + "%'";
+                first = false;
+            }
+
+            if(!rating.isEmpty()) {
+                if(!first) { query += " AND "; }
+                query += " `rating = '" + rating + "'";
+            }
+
+            query += ";";
+            return searchQuery(query);
+        }
     }
 
     /**
